@@ -18,7 +18,17 @@ npm run build
 npm run preview
 ```
 
-Deploy `dist/` to a static host configured to serve `index.html` for client-side routes. There is no service worker or offline installation; an already loaded app calculates locally, but loading/reloading requires the static app to be available.
+Deploy `dist/` to a static host. Relative asset paths and hash-based navigation support repository subpaths and refreshing dashboard links without server rewrite rules. There is no service worker or offline installation; an already loaded app calculates locally, but loading/reloading requires the static app to be available.
+
+## Open on iPhone with GitHub Pages
+
+The repository includes `.github/workflows/pages.yml` to build and deploy the app on pushes to `main`, or manually from the Actions tab.
+
+1. In GitHub, open **Settings → Pages → Build and deployment** and select **GitHub Actions** as the source. GitHub Pages must be available for the repository's visibility and plan.
+2. Open **Actions → Deploy dAIshi to GitHub Pages → Run workflow** if the latest automatic run did not deploy.
+3. When deployment succeeds, open the URL shown by GitHub Pages in Safari on the iPhone. The default project address is `https://oliviaescp.github.io/ESCP-2627DT-A1/`.
+
+Use Safari's **Share → Add to Home Screen** for a shortcut. This does not provide offline loading. Saved dashboards stay in that browser on that device; they do not sync with a computer. Use fictional data only. A workflow committed to the repository does not by itself confirm that hosting is enabled or deployment has succeeded.
 
 ## Checks
 
