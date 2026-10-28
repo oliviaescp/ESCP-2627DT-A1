@@ -1,160 +1,163 @@
-# dAIshi — Design system and interface guidance
+design.md — The design system and Storybook documentation: visual language, components, interface patterns, and relevant screen designs. 
 
-Converted from **dAIshi Github - Workshop.docx**. The workshop’s prompts and implementation directions are source documentation, not executed instructions.
+Can use claude design or figma, the visualization of the project, create a story motion, all the types of user interface elements 
 
-Related: [Evidence](evidence.md) · [Product](product.md) · [Architecture](architecture.md) · [Design](design.md)
+dAIshi Design System
+Product Character
+dAIshi is a calm, practical operations dashboard for restaurant teams. The interface should feel trustworthy, quietly premium, and human rather than overly technical.
 
-## Workshop design brief
+Dense business information is balanced with generous spacing, restrained color, serif display typography, and clear status cues.
+Visual Foundations
+Color
+The default theme uses a warm, near-white canvas and white surfaces.
 
-design.md — The design system and Storybook documentation: visual language, components, interface patterns, and relevant screen designs.
+Ink: #20211f
+Used for primary text, dark controls, and chart lines.
 
-Can use claude design or figma, the visualization of the project, create a story motion, all the types of user interface elements
+Muted: #72756f
+Used for supporting text, labels, and metadata.
 
-## Documentation status
+Canvas: #f4f5f2
+Used for the application background.
 
-The workshop does not supply an implemented Storybook, published Figma or Claude Design project, component code, exact color values, font specifications, or motion timings. Those remain to be defined. The stakeholder diagram is preserved with the research in [evidence.md](evidence.md#stakeholder-map).
+Surface: #ffffff
+Used for cards, panels, and forms.
 
-The sections below collect the existing design guidance from the PRD and architecture prompt; they do not represent additional design decisions.
+Line: #e2e4de
+Used for borders and dividers.
 
-## Front-end styling guidance from the architecture prompt
+Green: #31715b
+Used for positive states and primary accents.
 
-Use Tailwind CSS to create a clean, calm, professional dashboard experience. Design for common laptop and tablet widths, with dashboard cards stacking on narrow screens and filters collapsing where necessary.
+Soft Green: #e9f3ee
+Used for positive status backgrounds.
 
-Use consistent tokens for spacing, typography, borders, surface colors, and status colors. Status colors must always be paired with text labels or icons; color cannot be the only indicator. Provide visible focus states, keyboard-accessible controls, readable contrast, labeled form fields, and text alternatives or adjacent summaries for charts.
+Red: #a4493e
+Used for negative or high-severity states.
 
-The dashboard header should show the dashboard name, business context, last updated time, date range, comparison period, and edit action. Put the most important KPI cards and warnings first. Every card and warning should have an explicit detail action.
+Soft Red: #f8ece9
+Used for negative status backgrounds.
 
-The upload and mapping experience should show the original file and field names alongside the system’s interpretation. Use explicit states such as confirmed, needs review, cannot calculate, invalid, and outdated. Do not hide unresolved mappings behind a generic success message.
+Amber: #9a6c24
+Used for warnings, targets, and watch states.
 
-## Interaction structure from the PRD
+Soft Amber: #f8f0df
+Used for warning backgrounds.
 
-### Information architecture
+Dark mode uses a deep olive-black canvas, dark surfaces, softened light text, and brighter accent colors for contrast.
+Typography
+UI text uses Inter, SF Pro Text, or Segoe UI for a compact and highly legible appearance.
 
-```text
-Dash
-├── Home / Saved dashboards
-│   ├── Dashboard overview
-│   └── Dashboard detail
-├── Create dashboard
-│   ├── 1. Context and goal
-│   ├── 2. KPIs and assumptions
-│   ├── 3. Upload data
-│   ├── 4. Map and validate
-│   ├── 5. Generate
-│   └── 6. Review dashboard
-├── Data sources
-├── Alerts
-└── Settings and privacy
-```
+Display headings and key metric values use Georgia or Times New Roman at a medium weight with tight letter spacing.
 
-### Interaction model
+Eyebrows and status labels are small, uppercase, bold, and use increased letter spacing.
 
-The create flow is a guided sequence with a visible step indicator. Users can move back to earlier steps without losing confirmed selections. The dashboard is the main working surface after generation; management screens are secondary destinations.
+Supporting text uses muted gray to establish hierarchy.
+Layout
+The desktop layout uses a fixed 240-pixel sidebar and a fluid main content area.
 
-The interaction hierarchy is:
+Main content is centered with a maximum width of approximately 1,500 pixels and generous horizontal padding.
 
-- identify the decision and important KPI;
-- show the current result and whether it is on track;
-- explain the deviation or warning;
-- expose the source and calculation;
-- let the user edit the definition, mapping, or view.
+The dashboard follows this structure:
 
-### Navigation model
+Page header
+Context bar
+KPI grid
+Chart and warnings section
+Data sources table
 
-The primary navigation should expose four destinations:
+Dashboard grids use compact spacing, while sections have approximately 26 to 30 pixels of vertical separation.
 
-- Dashboards: saved dashboards and the active dashboard;
-- Data sources: uploaded files and their validation state;
-- Alerts: prioritized warnings across the available dashboards;
-- Settings: profile, privacy, deletion, and prototype information.
+At widths below 1,100 pixels, the chart and warnings stack vertically.
 
-The “Create dashboard” action should remain prominent from the dashboard home. During creation, the step navigation should be separated from the global navigation so users understand whether they are progressing through setup or browsing saved work.
+At widths below 760 pixels, the sidebar becomes a sticky top navigation bar and content padding is reduced.
+Components
+Navigation
+The sidebar contains the dAIshi brand, a primary “New dashboard” action, navigation items, theme switching, workspace information, and the user profile.
 
-### Key state transitions
+The active navigation item uses a light gray background and semibold text.
 
-Draft context
+Alerts display a red count pill.
+Buttons
+Primary buttons use a dark ink background, white text, a 40 to 42-pixel height, and a semibold label.
 
-→ KPI selection
+Secondary buttons use a white background with a 1-pixel border. Their selected state uses a light gray background.
 
-→ Files uploaded
+Text buttons are borderless and use muted text for low-emphasis actions.
 
-→ Mapping needs review
+Icon buttons are approximately 34 pixels square and become lightly shaded on hover.
 
-→ Ready to generate
+All buttons should display a visible green focus ring when selected using the keyboard.
+Status Pills
+Status pills are compact, rounded labels with a small colored dot.
 
-→ Generating
+Good status uses green text on a soft green background.
 
-→ Dashboard available
+Bad or high-severity status uses red text on a soft red background.
 
-→ Dashboard edited and saved
+Watch or medium-severity status uses amber text on a soft amber background.
 
-A validation problem moves the user to “Mapping needs review” rather than blocking the entire flow. A KPI with insufficient data remains visible as unresolved and explains what is missing. A failed generation returns the user to a recoverable state with retry and edit options.
+Sample status uses a neutral gray-green treatment.
+KPI Cards
+KPI cards are clickable panels containing a label, status pill, large serif value, target, delta, and latest-update information.
 
-### Detail and drill-down pattern
+The main value should be visually dominant. Target and delta information should remain secondary.
 
-Every KPI card and warning opens a detail view or side panel with:
+Delta colors should use the appropriate semantic color rather than decorative graphics.
+Data Visualization
+Charts should remain restrained and easy to interpret.
 
-- summary;
-- current and previous values;
-- target or assumption;
-- date and comparison period;
-- source file and field;
-- calculation description;
-- data-quality notes;
-- related KPIs or warnings where available.
+Use thin grid lines, a dark revenue line, a dashed amber cost line, and a muted green target line.
 
-This pattern is essential for trust and should be consistent across financial, operational, market, and trading examples.
+Legends should be small and right-aligned.
 
-## Interface skeleton from the PRD
+Avoid overly saturated fills and unnecessary chart decoration.
+Alerts and Warnings
+Warnings use a tinted icon tile, a short bold title, muted supporting information, and a right-aligned severity pill.
 
-### Screen inventory
+High-severity warnings use red.
 
-| Screen | Purpose | Key elements | Primary actions |
-| --- | --- | --- | --- |
-| Welcome / onboarding | Explain value and setup | Product purpose, three-step explanation, sample-data option | Start, use sample data |
-| Context and goal | Personalize the dashboard | Industry, sector, position, goal, company/project | Continue, back |
-| KPI selection | Choose monitoring scope | Recommended KPI groups, search, selected KPI list | Select, continue |
-| Custom KPI creation | Add a user-specific measure | Name, definition, unit, target, threshold, period | Save KPI, cancel |
-| Data upload | Collect source information | Dropzone, file list, formats, sample files, privacy notice | Upload, remove, continue |
-| Mapping and validation | Confirm data readiness | Detected fields, KPI coverage, mapping controls, warnings, missing fields | Confirm mapping, fix, back |
-| Generation progress | Set expectations during analysis | Progress stages, status messages, cancel/retry behavior | Wait, retry, return to mapping |
-| Generated dashboard | Monitor decisions and KPIs | KPI cards, charts, filters, status, warnings, freshness, source links | Inspect, edit, save |
-| KPI or warning detail | Explain a result | Current value, target, trend, calculation, source, impact, caveats | Back, edit source or threshold |
-| Dashboard editing | Customize the working view | Layout controls, card selection, chart type, filters, thresholds | Save, cancel |
-| Saved dashboards | Return to existing work | Dashboard list, warning count, context, last updated | Open, rename, delete, create |
-| Data sources | Review uploaded inputs | Source list, file status, period, freshness, delete/re-upload | Inspect, replace, delete |
-| Alerts | Prioritize issues across dashboards | Priority, changed assumption, impact, period, source | Open detail, dismiss/archive later |
-| Settings and privacy | Manage account and data controls | Profile, privacy notice, delete controls, sample-data label | Save, delete, review policy |
+Medium-severity warnings use amber.
 
-### Interface and layout requirements
+Human notes appear in a neutral gray-green inset panel.
+Drawers and Modals
+Details open in a right-side drawer over a blurred translucent backdrop.
 
-#### Global shell
+Creation flows use a centered modal with rounded corners, step indicators, choice cards, and a clear footer.
 
-- Persistent product name and current workspace or dashboard name.
-- Clear primary navigation on desktop.
-- A prominent “Create dashboard” action.
-- Breadcrumb or step context during setup.
-- Consistent status colors with text labels; color must not be the only indicator.
-- Visible loading, error, and unsaved-change states.
+The backdrop should establish focus without making the page feel visually heavy.
+Interaction Principles
+Use progressive disclosure. Show the metric first, then open detail views for formulas, evidence, and insights.
 
-#### Dashboard layout
+Preserve context when opening drawers or modals. Users should not leave the dashboard to view a single detail.
 
-- Header: dashboard name, context, last updated time, date range, comparison period, edit action.
-- First content row: the highest-priority KPI cards or changed assumptions.
-- Main content: charts and tables chosen for the KPI type.
-- Warning area: prioritized alerts with concise explanations and source links.
-- Detail access: every card and warning is clickable or has an explicit details action.
-- Footer or metadata area: source coverage, data freshness, and unresolved data issues.
+Use hover states for discoverability, but never make essential information available only through hover.
 
-#### Upload and mapping layout
+Keep transitions short and subtle, generally between 150 and 250 milliseconds.
 
-- Show the user’s files and the system’s interpretation side by side where practical.
-- Use explicit “confirmed,” “needs review,” and “cannot calculate” states.
-- Do not hide unresolved mappings behind a generic success message.
-- Keep the original file name and field name visible in the review path.
+Use semantic colors consistently. Green, red, and amber should communicate meaning rather than serve as decoration.
+Accessibility and Responsive Behavior
+Maintain visible focus states for buttons, selects, and text areas.
 
-### Responsive and accessibility expectations
+Icon-only controls should have accessible names or labels.
 
-The prototype should work at common laptop and tablet widths. On narrow screens, dashboard cards may stack and filters may collapse, but the source and warning explanations must remain accessible.
+Text and background combinations should maintain strong contrast in both light and dark themes.
 
-The interface must use readable text, keyboard-accessible controls, visible focus states, sufficient contrast, labels for form inputs, and text alternatives for status colors and charts. Charts should provide an adjacent table or summary for users who cannot interpret the visualization.
+Interactive controls should provide touch targets of at least 34 to 42 pixels.
+
+On mobile, secondary navigation labels may be hidden, but accessible names and alert counts must remain available.
+Content Voice
+Use concise, operational language such as:
+
+Monthly revenue
+
+Food cost
+
+Needs attention
+
+Fictional data only
+
+Titles should be specific and human.
+
+Supporting copy should explain why a metric matters or what action is recommended without sounding alarmist.
+
