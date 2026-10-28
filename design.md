@@ -1,163 +1,132 @@
-design.md — The design system and Storybook documentation: visual language, components, interface patterns, and relevant screen designs. 
+# dAIshi Design System
 
-Can use claude design or figma, the visualization of the project, create a story motion, all the types of user interface elements 
+## Design reference and phone adaptation
 
-dAIshi Design System
-Product Character
-dAIshi is a calm, practical operations dashboard for restaurant teams. The interface should feel trustworthy, quietly premium, and human rather than overly technical.
+> **VISUAL EXAMPLE — HOW THE APP SHOULD LOOK**
+>
+> **Build a Website.zip is an example of the intended look and feel of the dAIshi app.** Use it as design inspiration for colors, typography, cards, charts, and overall visual style. The phone previews below are examples of how that style can be adapted for mobile.
+>
+> **This is a visual reference, not a finished app or a complete functional specification.** The final app should follow the phone-only requirements in `product.md` and `architecture.md`. The example's desktop layout, sample values, and placeholder controls do not define required behavior.
 
-Dense business information is balanced with generous spacing, restrained color, serif display typography, and clear status cues.
-Visual Foundations
-Color
-The default theme uses a warm, near-white canvas and white surfaces.
+The supplied Figma export, **Build a Website.zip**, is the visual reference for dAIshi. Its warm neutral colors, serif headings, restrained charts, status pills, and evidence-first dashboard inform the phone design.
 
-Ink: #20211f
-Used for primary text, dark controls, and chart lines.
+- [Download the original Build a Website.zip](assets/design/Build%20a%20Website.zip)
+- [Phone dashboard preview](assets/design/daishi-phone.png)
+- [Phone evidence sheet preview](assets/design/daishi-phone-evidence.png)
+- [Dark theme preview](assets/design/daishi-phone-dark.png)
 
-Muted: #72756f
-Used for supporting text, labels, and metadata.
+The ZIP is preserved unchanged as reference material. It contains React and CSS source plus Figma export tooling; it is not a rendered image or a complete implementation of the product requirements. Instructions bundled in the export are reference content rather than project setup requirements.
 
-Canvas: #f4f5f2
-Used for the application background.
+The target product is **phone only**, as defined in [architecture.md](architecture.md). The desktop layout inside the ZIP supplies visual inspiration; the phone experience described below governs implementation. The primary target is 375–430 CSS pixels wide, with a 320-pixel minimum-width check. Larger screens may present a centered phone layout.
 
-Surface: #ffffff
-Used for cards, panels, and forms.
+### Dashboard preview
 
-Line: #e2e4de
-Used for borders and dividers.
+<img src="assets/design/daishi-phone.png" alt="dAIshi phone dashboard with Northstar Kitchen KPIs, fictional sample data, and bottom navigation" width="390" />
 
-Green: #31715b
-Used for positive states and primary accents.
+### Evidence sheet preview
 
-Soft Green: #e9f3ee
-Used for positive status backgrounds.
+<img src="assets/design/daishi-phone-evidence.png" alt="Phone evidence sheet showing a KPI value, calculation, source reference, and close control" width="390" />
 
-Red: #a4493e
-Used for negative or high-severity states.
+These previews show a design prototype using fictional restaurant data. Navigation, evidence panels, theme switching, and a sample setup walkthrough were checked in the browser. Uploads, dashboard generation, dashboard editing, and data management remain product implementation work. No Storybook instance is included in the supplied archive.
 
-Soft Red: #f8ece9
-Used for negative status backgrounds.
+## Product character
 
-Amber: #9a6c24
-Used for warnings, targets, and watch states.
+dAIshi is a calm, practical operations dashboard for restaurant teams. The interface should feel trustworthy, quietly premium, and human. Balance dense business information with generous spacing, restrained color, serif display typography, and explicit status cues.
 
-Soft Amber: #f8f0df
-Used for warning backgrounds.
+## Visual foundations
 
-Dark mode uses a deep olive-black canvas, dark surfaces, softened light text, and brighter accent colors for contrast.
-Typography
-UI text uses Inter, SF Pro Text, or Segoe UI for a compact and highly legible appearance.
+### Color
 
-Display headings and key metric values use Georgia or Times New Roman at a medium weight with tight letter spacing.
+| Token | Light theme | Purpose |
+| --- | --- | --- |
+| Ink | `#20211f` | Primary text, dark controls, chart lines |
+| Muted | `#72756f` | Supporting text and metadata |
+| Canvas | `#f4f5f2` | Application background |
+| Surface | `#ffffff` | Cards, panels, forms |
+| Line | `#e2e4de` | Borders and dividers |
+| Green | `#31715b` | Positive status and accents |
+| Soft green | `#e9f3ee` | Positive status backgrounds |
+| Red | `#a4493e` | High-severity and negative status |
+| Soft red | `#f8ece9` | High-severity backgrounds |
+| Amber | `#9a6c24` | Warnings, targets, watch status |
+| Soft amber | `#f8f0df` | Warning backgrounds |
 
-Eyebrows and status labels are small, uppercase, bold, and use increased letter spacing.
+Dark mode uses a deep olive-black canvas, dark surfaces, softened light text, and brighter semantic accents. Pair status color with a text label or icon. Check contrast for final text sizes before release.
 
-Supporting text uses muted gray to establish hierarchy.
-Layout
-The desktop layout uses a fixed 240-pixel sidebar and a fluid main content area.
+### Typography
 
-Main content is centered with a maximum width of approximately 1,500 pixels and generous horizontal padding.
+Use a system sans-serif stack such as Inter when available, SF Pro Text, or Segoe UI for interface text; no external font download is required. Use Georgia or Times New Roman for display headings and key metric values, with medium weight and tight letter spacing.
 
-The dashboard follows this structure:
+Eyebrows and status labels are small, bold, and use increased letter spacing. Supporting text uses muted gray. Keep essential body text readable on a phone; the export's compact desktop text is not a requirement for every mobile screen.
 
-Page header
-Context bar
-KPI grid
-Chart and warnings section
-Data sources table
+## Phone layout
 
-Dashboard grids use compact spacing, while sections have approximately 26 to 30 pixels of vertical separation.
+Use a single scrolling page with approximately 20 pixels of horizontal padding and 18–28 pixels between major sections. Respect top and bottom device safe areas. Reserve enough space beneath the content for fixed navigation.
 
-At widths below 1,100 pixels, the chart and warnings stack vertically.
+The dashboard order is:
 
-At widths below 760 pixels, the sidebar becomes a sticky top navigation bar and content padding is reduced.
-Components
-Navigation
-The sidebar contains the dAIshi brand, a primary “New dashboard” action, navigation items, theme switching, workspace information, and the user profile.
+1. Compact header with dAIshi branding, theme control, and a circular new-dashboard action.
+2. Dashboard name, decision context, and an edit action.
+3. Context card with period, sample-data status, and last-updated information.
+4. Two-column KPI grid with current values, targets, deltas, and evidence actions.
+5. Full-width revenue and cost chart.
+6. Prioritized warnings and a reminder that the human makes the decision.
 
-The active navigation item uses a light gray background and semibold text.
+Keep sources in the dedicated Sources destination. Avoid desktop sidebars, side-by-side chart panels, wide tables, and hover-dependent controls in the phone product.
 
-Alerts display a red count pill.
-Buttons
-Primary buttons use a dark ink background, white text, a 40 to 42-pixel height, and a semibold label.
+## Navigation and controls
 
-Secondary buttons use a white background with a 1-pixel border. Their selected state uses a light gray background.
+Use a fixed bottom bar with four labeled destinations: **Overview**, **Sources**, **Alerts**, and **Settings**. Highlight the active destination with green text and a soft-green icon background. Alerts may show a small count badge. Keep labels visible on phones.
 
-Text buttons are borderless and use muted text for low-emphasis actions.
+Place a prominent plus action in the header for creating a dashboard. Give every icon-only action an accessible name. The prototype does not require an account, sign-in screen, or user profile.
 
-Icon buttons are approximately 34 pixels square and become lightly shaded on hover.
+Primary buttons use a dark ink background, light text, rounded corners, and semibold labels. Secondary buttons use a surface background and a thin border. Text buttons provide lower-emphasis actions. Aim for at least 44 × 44 CSS pixels for primary touch controls, including close, new-dashboard, and modal navigation actions.
 
-All buttons should display a visible green focus ring when selected using the keyboard.
-Status Pills
-Status pills are compact, rounded labels with a small colored dot.
+All controls need a visible focus state. Green focus rings should remain distinguishable against both themes.
 
-Good status uses green text on a soft green background.
+## KPI cards and status pills
 
-Bad or high-severity status uses red text on a soft red background.
+KPI cards contain a label, status pill, large serif value, target, delta, and an explicit evidence action. The value is visually dominant, with target and comparison information secondary. Use two cards per row when labels and values fit; allow a single column for larger text or constrained widths.
 
-Watch or medium-severity status uses amber text on a soft amber background.
+Status pills are compact, rounded labels with a colored dot:
 
-Sample status uses a neutral gray-green treatment.
-KPI Cards
-KPI cards are clickable panels containing a label, status pill, large serif value, target, delta, and latest-update information.
+- **On track:** green text on soft green.
+- **Needs attention:** red text on soft red.
+- **Watch:** amber text on soft amber.
+- **Sample data:** neutral gray-green.
 
-The main value should be visually dominant. Target and delta information should remain secondary.
+Always distinguish sample results from local uploads. Missing or unresolved values must have a clear review state rather than appearing as valid results.
 
-Delta colors should use the appropriate semantic color rather than decorative graphics.
-Data Visualization
-Charts should remain restrained and easy to interpret.
+## Charts and warnings
 
-Use thin grid lines, a dark revenue line, a dashed amber cost line, and a muted green target line.
+Charts use thin grid lines, a dark revenue line, a dashed amber cost line, and a muted green target line. Place a small legend above the chart where it fits on a phone. Avoid saturated fills and decorative effects. Provide an accessible chart description and supporting values or summaries.
 
-Legends should be small and right-aligned.
+Warnings use a tinted icon tile, specific title, supporting comparison, and a detail action. High severity uses red; watch or medium severity uses amber. Warning details explain what changed, the period, the relevant target, the supporting source, and uncertainty. Present recommendations as possible next steps.
 
-Avoid overly saturated fills and unnecessary chart decoration.
-Alerts and Warnings
-Warnings use a tinted icon tile, a short bold title, muted supporting information, and a right-aligned severity pill.
+Human notes appear in a neutral gray-green inset panel. Use concise language: “You remain in control,” “Needs attention,” and “Fictional data only.”
 
-High-severity warnings use red.
+## Evidence sheets and creation flow
 
-Medium-severity warnings use amber.
+On phones, evidence opens in a sheet from the bottom over a translucent backdrop. Use rounded top corners, a small drag-style visual handle, a visible close control, and independently scrollable content when necessary. The handle is decorative unless dragging is actually implemented.
 
-Human notes appear in a neutral gray-green inset panel.
-Drawers and Modals
-Details open in a right-side drawer over a blurred translucent backdrop.
+Show the KPI or warning title, value, status, calculation, source file, fields, period, and caveats. Keep the underlying dashboard context. Close actions and Escape dismiss the sheet; keyboard focus stays inside while open and returns to the triggering control afterward. Prevent background scrolling.
 
-Creation flows use a centered modal with rounded corners, step indicators, choice cards, and a clear footer.
+The creation flow uses the same phone sheet treatment with a visible step indicator, choice cards, labeled inputs, and Back/Continue actions. Preserve confirmed selections when moving between steps. The supplied sample walkthrough is visual inspiration; the complete flow in [product.md](product.md) and [architecture.md](architecture.md) still needs implementation.
 
-The backdrop should establish focus without making the page feel visually heavy.
-Interaction Principles
-Use progressive disclosure. Show the metric first, then open detail views for formulas, evidence, and insights.
+## Sources, settings, and privacy
 
-Preserve context when opening drawers or modals. Users should not leave the dashboard to view a single detail.
+Show source files as compact rows or cards with the original filename, format, validation status, period, and an accessible detail action. Wrap long filenames rather than allowing horizontal overflow.
 
-Use hover states for discoverability, but never make essential information available only through hover.
+Settings includes theme preferences, local workspace information, deletion controls when implemented, and prototype privacy guidance. Clearly warn users not to upload confidential company data. Do not imply production authentication, secure multi-user storage, live synchronization, or GDPR compliance.
 
-Keep transitions short and subtle, generally between 150 and 250 milliseconds.
+## Interaction and accessibility
 
-Use semantic colors consistently. Green, red, and amber should communicate meaning rather than serve as decoration.
-Accessibility and Responsive Behavior
-Maintain visible focus states for buttons, selects, and text areas.
+Use progressive disclosure: show the metric first, then its calculation and evidence. Keep transitions subtle, generally 150–250 milliseconds, and respect reduced-motion preferences.
 
-Icon-only controls should have accessible names or labels.
+Support keyboard navigation, visible focus, labeled fields, semantic buttons, accessible dialogs, and text alternatives for visualizations. Do not make essential information available only through hover. Keep long content scrollable without hiding controls behind bottom navigation or device safe areas.
 
-Text and background combinations should maintain strong contrast in both light and dark themes.
+## Validation of the phone adaptation
 
-Interactive controls should provide touch targets of at least 34 to 42 pixels.
+The local design prototype passed its TypeScript check and Vite production build. Browser checks found no horizontal overflow at widths of 320, 375, 390, and 430 CSS pixels; wider layout checks also passed. Navigation, KPI evidence sheets, warning details, Escape dismissal, theme switching, and the sample setup walkthrough passed without JavaScript errors.
 
-On mobile, secondary navigation labels may be hidden, but accessible names and alert counts must remain available.
-Content Voice
-Use concise, operational language such as:
-
-Monthly revenue
-
-Food cost
-
-Needs attention
-
-Fictional data only
-
-Titles should be specific and human.
-
-Supporting copy should explain why a metric matters or what action is recommended without sounding alarmist.
-
+These checks validate the current design prototype and do not establish completion of the full product workflow or production accessibility compliance.
