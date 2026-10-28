@@ -1,163 +1,17 @@
-# dAIshi — Research evidence
+# evidence.md — Key insights from user research: personas, user activities or situations, needs or desired outcomes, and barriers or frustrations. Use the format: “As a [persona], I want to [action] because [need], but [obstacle].”
 
-Converted from **dAIshi Github - Workshop.docx**. The workshop’s prompts and implementation directions are source documentation, not executed instructions.
-
-Related: [Evidence](evidence.md) · [Product](product.md) · [Architecture](architecture.md) · [Design](design.md)
-
-## Source organization note
-
-evidence.md — Key insights from user research: personas, user activities or situations, needs or desired outcomes, and barriers or frustrations. Use the format: “As a [persona], I want to [action] because [need], but [obstacle].”
-
-## Research insight synthesis
-
-These statements summarize the supplied interview notes; they are not verbatim quotations or additional research.
-
-- As a bank investment decision-maker, I want to compare original projections with actual performance because changed assumptions affect returns, but fragmented models and irrelevant alerts make review difficult.
-- As a cash equity trader, I want to track signals, assumptions, and PnL across time frames because I need to evaluate whether a signal still works, but the investment process changes constantly and accuracy is critical.
-- As an investment analyst, I want to connect the investment thesis to current market and operating data because I need to explain the impact on expected returns, but manual Excel reviews must remain accurate and confidential.
-- As a senior advisor supporting CEOs, I want a prioritized view across active deals because leaders need to know what matters today, but excess detail and irrelevant warnings add work.
-- As the owner of a frozen fish brand, I want to compare forecasts with sales, orders, inventory, costs, and margins because I need to identify deviations early, but files and conversations are scattered and may be outdated.
-- As an M&A decision-maker, I want to trace financial inconsistencies and risks to their sources because acquisition decisions depend on reliable evidence, but manual reviews can miss mismatched figures and confidential information needs protection.
-- As restaurant manager Anna Philips, I want one clear view of targets, actual performance, and supporting data because I need to act quickly, but scattered information, limited review time, and unreliable alerts undermine trust.
-
-## User Persona: Restaurant Manager
-
-## Name
-
-Anna Philips
-
-## Role
-
-Restaurant Manager in Berlin
-
-## Background
-
-Anna manages the daily operations of a busy restaurant. She is responsible for sales, staffing, inventory, supplier orders, costs, pricing, customer satisfaction, and business performance.
-
-She makes operational decisions every day and also supports longer-term decisions, such as launching new menu items, increasing production, changing prices, or negotiating with suppliers.
-
-## Goals
-
-- Understand the restaurant’s current performance quickly.
-- Compare forecasts and targets with actual results.
-- Detect problems before they become expensive.
-- Monitor sales, costs, inventory, staffing, and customer feedback.
-- Save time when reviewing reports and business information.
-- Make better decisions using reliable and understandable data.
-
-## Current Problems
-
-- Information is spread across spreadsheets, emails, messages, reports, and meetings.
-- It can be difficult to find the latest or correct version of a file.
-- Important information may be lost in conversations.
-- Anna does not always have one overview of what needs attention today.
-- Problems such as weak demand, excess inventory, rising costs, or falling margins may be discovered too late.
-- She has limited time and cannot review every detail manually.
-
-## Important KPIs
-
-- Daily and weekly sales
-- Revenue
-- Food and operating costs
-- Profit margin
-- Inventory levels
-- Food waste
-- Supplier orders
-- Staff utilization
-- Customer satisfaction
-- Sales by menu item
-- Forecast versus actual performance
-- Changes in costs or demand
-
-## Desired App Experience
-
-Anna wants one simple dashboard that shows:
-
-- What is happening today
-- Which KPIs have changed
-- Which targets are being missed
-- Which issues require immediate attention
-- Why a deviation occurred
-- What data supports the warning
-- What action could be considered
-
-She should be able to click on an alert and view the related sales, inventory, cost, or customer data.
-
-## Important Alerts
-
-The app should prioritize warnings about:
-
-- Falling sales
-- Weak demand for a menu item
-- Excess inventory
-- Increasing food costs
-- Falling profit margins
-- Unexpected changes in customer satisfaction
-- Differences between forecasts and actual results
-- Supplier or order issues
-
-Alerts should be simple and prioritized. For example:
-
-- Blue: Medium-level issue
-- Red: Important issue requiring attention
-
-## Trust Requirements
-
-Anna would trust an alert if it:
-
-- Uses recent and accurate data.
-- Shows the data source.
-- Shows the comparison period.
-- Explains how the alert was calculated.
-- Clearly explains what changed.
-- Shows the financial or operational impact.
-
-She would ignore alerts that are outdated, unclear, irrelevant, or based on incorrect data.
-
-## Concerns
-
-- Confidentiality of restaurant and financial data
-- Incorrect information
-- Inaccurate calculations
-- AI hallucinations
-- Too many irrelevant alerts
-- Having to update information manually
-- The app creating additional work
-- A complicated interface
-- Losing trust after a serious error
-
-## Technology and Data Needs
-
-The app should work with information from:
-
-- Excel or CSV files
-- Sales reports
-- Inventory records
-- Supplier orders
-- Staff information
-- Cost reports
-- Customer feedback
-- Forecasts and targets
-
-## Persona Statement
-
-“I need a clean and reliable overview of my restaurant so I can quickly understand what has changed, identify problems early, and decide what to do without spending hours searching through files and messages.”
-
-## Main Feature Priority
-
-The most valuable feature for Anna is a simple dashboard that connects restaurant targets and forecasts with actual performance, highlights important deviations, explains their causes, and shows the supporting data.
 ## ALL INTERVIEWS
 
-### Interviews:
+**Interviews:**
 
 ### A President of China Construction Bank
 
-### Context
+#### Context
 
 - Performs market research, financial analysis, and investment evaluation.
 - Evaluates assumptions such as occupancy, rental income, operating expenses, financing costs, and exit valuations.
 
-### Evidence-based needs
+#### Evidence-based needs
 
 - Compare original financial projections with updated market data and actual performance.
 - Monitor occupancy rates, rental income, operating costs, interest rates, and market valuations.
@@ -166,7 +20,7 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 - Connect the original investment thesis with actual performance.
 - Provide clear alerts when changes may materially affect returns.
 
-### Requirements and constraints
+#### Requirements and constraints
 
 - Integrate directly with Excel financial models.
 - Use reliable data and explain what changed.
@@ -178,12 +32,12 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 
 ### Cash Equity Trader at Bank of America
 
-### Context
+#### Context
 
 - Makes daily trading, investment, and business decisions.
 - Worked on automating trading signals with a quant team.
 
-### Evidence-based needs
+#### Evidence-based needs
 
 - Record trading signals and the assumptions behind them.
 - Test assumptions using real trading decisions.
@@ -192,7 +46,7 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 - Detect when a signal works for one time frame but not another, such as daily versus monthly.
 - Reduce the time required for investment and process decisions.
 
-### Requirements and constraints
+#### Requirements and constraints
 
 - Warnings must account for a constantly changing investment process.
 - Warnings should be supported by experience and evidence that they are correct.
@@ -201,12 +55,12 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 
 ### Investment Analyst at Adam America
 
-### Context
+#### Context
 
 - Performs market research, financial analysis, and investment evaluation.
 - Evaluates assumptions such as occupancy, rental income, operating expenses, financing costs, and exit valuations.
 
-### Evidence-based needs
+#### Evidence-based needs
 
 - Compare original financial projections with updated market data and actual performance.
 - Monitor occupancy rates, rental income, operating costs, interest rates, and market valuations.
@@ -215,7 +69,7 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 - Connect the original investment thesis with actual performance.
 - Provide clear alerts when changes may materially affect returns.
 
-### Requirements and constraints
+#### Requirements and constraints
 
 - Integrate directly with Excel financial models.
 - Use reliable data and explain what changed.
@@ -227,12 +81,12 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 
 ### Senior Advisor supporting CEOs
 
-### Context
+#### Context
 
 - Supports several CEOs across multiple deals.
 - Assesses opportunities, flags risks, challenges assumptions, and supports final decision-makers.
 
-### Evidence-based needs
+#### Evidence-based needs
 
 - Provide one control-panel view of what matters today across all active deals.
 - Show, for each deal, key figures, timelines, changed assumptions, and deviations since the previous review.
@@ -240,7 +94,7 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 - Provide prioritized warnings about changing assumptions.
 - Use simple warning levels, such as blue for medium issues and red for important issues.
 
-### Requirements and constraints
+#### Requirements and constraints
 
 - CEOs are the main users; advisors use the tool to support them.
 - Warnings must be relevant and important enough to require attention.
@@ -250,12 +104,12 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 
 ### Cero Gradors founder & Owner (Frozen fish Brand)
 
-### Context
+#### Context
 
 - Makes decisions about production, product launches, supermarket orders, pricing, and costs.
 - Stores information across Excel files, emails, WhatsApp conversations, and meeting notes.
 
-### Evidence-based needs
+#### Evidence-based needs
 
 - Compare forecasts or goals with actual sales, supermarket orders, inventory, production costs, and margins.
 - Track daily or weekly sell-out data.
@@ -264,7 +118,7 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 - Show the cause of deviations.
 - Suggest possible solutions.
 
-### Requirements and constraints
+#### Requirements and constraints
 
 - Handle documents spread across folders and conversations.
 - Help identify the latest version when several versions of an Excel file exist.
@@ -276,12 +130,12 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 
 ### Business Decision-Making, Mergers & Acquisitions, and Information Management
 
-### Context
+#### Context
 
 - Makes strategic and major business decisions and oversees company operations.
 - Works with mergers, acquisitions, company integration, investment attractiveness, and potential synergies.
 
-### Evidence-based needs
+#### Evidence-based needs
 
 - Monitor acquisition-related financial information, including ROI, EBITDA, and other performance indicators.
 - Detect risks that may be missed during manual reviews.
@@ -291,7 +145,7 @@ The most valuable feature for Anna is a simple dashboard that connects restauran
 - Flag overlooked risks.
 - Support the finance department with financial information and analysis.
 
-### Requirements and constraints
+#### Requirements and constraints
 
 - Show the source of the information used for each KPI or warning.
 - Support human judgment, relationships, meetings, and communication rather than replacing them.
@@ -368,16 +222,3 @@ The interviews most strongly support an MVP that demonstrates:
 ## Evidence-based non-goals for the MVP
 
 The interviews do not support replacing human investment judgment, relationships, meetings, or final decision-making. The tool should support review and risk detection while leaving decisions with the responsible people.
-
-## Stakeholder map
-
-The workshop includes this diagram of the people and organizations that use, influence, or are affected by the dashboard.
-
-![dAIsh stakeholder map: core users, data owners and clients, oversight, and the surrounding environment.](assets/stakeholder-map.png)
-
-| Group | Stakeholders | Relationship and needs |
-| --- | --- | --- |
-| Core users | Project managers, sales and client managers, finance managers, team leads, and occasional executives | Define KPIs for their area, upload data, and review results. Need a dashboard in under ten minutes without technical help, readable KPIs, and the source of every figure. |
-| Data owners and clients | Finance, HR and project teams, the IT team, and clients named in files | Maintain Excel and CSV sources; IT connects other sources later. Need matching fields, missing-column warnings, little additional work, permission to use data, and confidentiality. |
-| Oversight | Compliance and data protection, IT security, and data and AI regulators | Review uploads, access, retention, and transparency about AI. Need controlled access, deletion, a privacy policy before real data use, GDPR where applicable, labeled AI content, and fictional prototype data. |
-| Environment | AI service providers, software vendors such as Google Sheets and CRM/project/finance tools, and similar BI/dashboard tools | Supply processing or future connections, or compete for the same users. Need permission before sending confidential information, simple future integrations, and differentiation through user-defined KPIs. |
