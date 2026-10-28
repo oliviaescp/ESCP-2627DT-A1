@@ -534,3 +534,130 @@ the main flow works with keyboard navigation and does not rely on color alone;
 final decisions and recommendations are explicitly left to the responsible human user.
 
 
+
+# User Persona: Restaurant Manager
+
+## Name
+
+Anna Philips
+
+## Role
+
+Restaurant Manager in Berlin
+
+## Background
+
+Anna manages the daily operations of a busy restaurant. She is responsible for sales, staffing, inventory, supplier orders, costs, pricing, customer satisfaction, and business performance.
+
+She makes operational decisions every day and also supports longer-term decisions, such as launching new menu items, increasing production, changing prices, or negotiating with suppliers.
+
+## Goals
+
+- Understand the restaurant’s current performance quickly.
+- Compare forecasts and targets with actual results.
+- Detect problems before they become expensive.
+- Monitor sales, costs, inventory, staffing, and customer feedback.
+- Save time when reviewing reports and business information.
+- Make better decisions using reliable and understandable data.
+
+## Current Problems
+
+- Information is spread across spreadsheets, emails, messages, reports, and meetings.
+- It can be difficult to find the latest or correct version of a file.
+- Important information may be lost in conversations.
+- Anna does not always have one overview of what needs attention today.
+- Problems such as weak demand, excess inventory, rising costs, or falling margins may be discovered too late.
+- She has limited time and cannot review every detail manually.
+
+## Important KPIs
+
+- Daily and weekly sales
+- Revenue
+- Food and operating costs
+- Profit margin
+- Inventory levels
+- Food waste
+- Supplier orders
+- Staff utilization
+- Customer satisfaction
+- Sales by menu item
+- Forecast versus actual performance
+- Changes in costs or demand
+
+## Desired App Experience
+
+Anna wants one simple dashboard that shows:
+
+- What is happening today
+- Which KPIs have changed
+- Which targets are being missed
+- Which issues require immediate attention
+- Why a deviation occurred
+- What data supports the warning
+- What action could be considered
+
+She should be able to click on an alert and view the related sales, inventory, cost, or customer data.
+
+## Important Alerts
+
+The app should prioritize warnings about:
+
+- Falling sales
+- Weak demand for a menu item
+- Excess inventory
+- Increasing food costs
+- Falling profit margins
+- Unexpected changes in customer satisfaction
+- Differences between forecasts and actual results
+- Supplier or order issues
+
+Alerts should be simple and prioritized. For example:
+
+- Blue: Medium-level issue
+- Red: Important issue requiring attention
+
+## Trust Requirements
+
+Anna would trust an alert if it:
+
+- Uses recent and accurate data.
+- Shows the data source.
+- Shows the comparison period.
+- Explains how the alert was calculated.
+- Clearly explains what changed.
+- Shows the financial or operational impact.
+
+She would ignore alerts that are outdated, unclear, irrelevant, or based on incorrect data.
+
+## Concerns
+
+- Confidentiality of restaurant and financial data
+- Incorrect information
+- Inaccurate calculations
+- AI hallucinations
+- Too many irrelevant alerts
+- Having to update information manually
+- The app creating additional work
+- A complicated interface
+- Losing trust after a serious error
+
+## Technology and Data Needs
+
+The app should work with information from:
+
+- Excel or CSV files
+- Sales reports
+- Inventory records
+- Supplier orders
+- Staff information
+- Cost reports
+- Customer feedback
+- Forecasts and targets
+
+## Persona Statement
+
+> “I need a clean and reliable overview of my restaurant so I can quickly understand what has changed, identify problems early, and decide what to do without spending hours searching through files and messages.”
+
+## Main Feature Priority
+
+The most valuable feature for Anna is a simple dashboard that connects restaurant targets and forecasts with actual performance, highlights important deviations, explains their causes, and shows the supporting data.
