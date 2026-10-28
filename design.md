@@ -1,5 +1,7 @@
 # dAIshi Design System
 
+[Design guidance](#design-reference-and-phone-adaptation) · [Design assets](#design-assets)
+
 ## Design reference and phone adaptation
 
 > **VISUAL EXAMPLE — HOW THE APP SHOULD LOOK**
@@ -10,24 +12,9 @@
 
 The supplied Figma export, **Build a Website.zip**, is the visual reference for dAIshi. Its warm neutral colors, serif headings, restrained charts, status pills, and evidence-first dashboard inform the phone design.
 
-- [Download the original Build a Website.zip](assets/design/Build%20a%20Website.zip)
-- [Phone dashboard preview](assets/design/daishi-phone.png)
-- [Phone evidence sheet preview](assets/design/daishi-phone-evidence.png)
-- [Dark theme preview](assets/design/daishi-phone-dark.png)
-
-The ZIP is preserved unchanged as reference material. It contains React and CSS source plus Figma export tooling; it is not a rendered image or a complete implementation of the product requirements. Instructions bundled in the export are reference content rather than project setup requirements.
+Browse the source export and all three phone previews in the separate [Design assets](#design-assets) section.
 
 The target product is **phone only**, as defined in [architecture.md](architecture.md). The desktop layout inside the ZIP supplies visual inspiration; the phone experience described below governs implementation. The primary target is 375–430 CSS pixels wide, with a 320-pixel minimum-width check. Larger screens may present a centered phone layout.
-
-### Dashboard preview
-
-<img src="assets/design/daishi-phone.png" alt="dAIshi phone dashboard with Northstar Kitchen KPIs, fictional sample data, and bottom navigation" width="390" />
-
-### Evidence sheet preview
-
-<img src="assets/design/daishi-phone-evidence.png" alt="Phone evidence sheet showing a KPI value, calculation, source reference, and close control" width="390" />
-
-These previews show a design prototype using fictional restaurant data. Navigation, evidence panels, theme switching, and a sample setup walkthrough were checked in the browser. Uploads, dashboard generation, dashboard editing, and data management remain product implementation work. No Storybook instance is included in the supplied archive.
 
 ## Product character
 
@@ -130,3 +117,33 @@ Support keyboard navigation, visible focus, labeled fields, semantic buttons, ac
 The local design prototype passed its TypeScript check and Vite production build. Browser checks found no horizontal overflow at widths of 320, 375, 390, and 430 CSS pixels; wider layout checks also passed. Navigation, KPI evidence sheets, warning details, Escape dismissal, theme switching, and the sample setup walkthrough passed without JavaScript errors.
 
 These checks validate the current design prototype and do not establish completion of the full product workflow or production accessibility compliance.
+
+## Design assets
+
+<details>
+<summary><strong>Open design assets — source export and phone previews</strong></summary>
+
+This section brings together the files in [assets/design](assets/design). Expand it to browse the previews or download the original source export.
+
+- [Download the original Build a Website.zip](assets/design/Build%20a%20Website.zip)
+- [Phone dashboard preview](assets/design/daishi-phone.png)
+- [Phone evidence sheet preview](assets/design/daishi-phone-evidence.png)
+- [Dark theme preview](assets/design/daishi-phone-dark.png)
+
+The ZIP is preserved unchanged as reference material. It contains React and CSS source plus Figma export tooling; it is not a rendered image or a complete implementation of the product requirements. Instructions bundled in the export are reference content rather than project setup requirements.
+
+### Dashboard preview
+
+<img src="assets/design/daishi-phone.png" alt="dAIshi phone dashboard with Northstar Kitchen KPIs, fictional sample data, and bottom navigation" width="390" />
+
+### Evidence sheet preview
+
+<img src="assets/design/daishi-phone-evidence.png" alt="Phone evidence sheet showing a KPI value, calculation, source reference, and close control" width="390" />
+
+These previews show a design prototype using fictional restaurant data. Navigation, evidence panels, theme switching, and a sample setup walkthrough were checked in the browser. Uploads, dashboard generation, dashboard editing, and data management remain product implementation work. No Storybook instance is included in the supplied archive.
+
+### Dark theme preview
+
+<img src="assets/design/daishi-phone-dark.png" alt="dAIshi phone dashboard preview in the dark theme" width="390" />
+
+</details>
