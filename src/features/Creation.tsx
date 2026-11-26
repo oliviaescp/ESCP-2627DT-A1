@@ -386,8 +386,7 @@ export function Creation() {
             />
           </label>
           <p className="notice">
-            Fictional or anonymized data only. No account, external AI, or live
-            connection.
+            Use fictional data only. The prototype runs in this browser.
           </p>
         </div>
       )}

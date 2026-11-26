@@ -1,13 +1,19 @@
-Product Requirements Document
-Product overview
+# dAIshi Product Requirements Document
+
+## Product overview
+
 Product: dAIshi, an evidence-based decision and KPI dashboard creator
 Document status: MVP product requirements for a functional prototype
 Primary audience: Product, design, and engineering teams
 Source: Workshop brief and interview findings supplied with the project
-Dash helps business decision-makers record the assumptions behind important decisions, connect those assumptions to business data, and see when actual performance begins to diverge from the plan. A user selects a business context, defines KPIs and targets, uploads Excel or CSV files, confirms the data mapping, and receives an editable dashboard with traceable calculations and prioritized warnings.
-The MVP uses fictional or anonymized data, with a consulting company and an independent restaurant as example contexts. It demonstrates the core value without requiring live integrations, real customer data, or complex enterprise administration.
-Strategy
-User problem
+dAIshi helps business decision-makers record the assumptions behind important decisions, connect those assumptions to business data, and see when actual performance begins to diverge from the plan. A user selects a business context, defines KPIs and targets, uploads Excel or CSV files, confirms the data mapping, and receives an editable dashboard with traceable calculations and prioritized warnings.
+The MVP uses fictional data, with a consulting company and an independent restaurant as example contexts. It demonstrates the core value without requiring live integrations, real customer data, or complex enterprise administration.
+
+## 1. Strategy
+
+
+### User problem
+
 Business information is distributed across spreadsheets, exports, invoices, operational tools, documents, and conversations. Decision-makers often have a target or investment assumption in mind but no simple way to record it, compare it with current performance, or discover that it is no longer true.
 The resulting problems are:
 important changes are found late, often during month-end reconciliation;
@@ -16,13 +22,17 @@ users cannot easily tell which source or calculation produced a KPI or warning;
 building a useful dashboard requires technical knowledge or manual setup;
 generic dashboards show data but do not connect it to the decision the user is trying to make;
 excessive or unexplained alerts reduce trust and create more work.
-Target users
+
+### Target users
+
 Primary user: owner or decision-maker
 An owner, manager, executive, investor, or deal lead who makes operational or financial decisions and needs a fast control panel. This person may be comfortable with spreadsheets but is not expected to be a data or BI specialist.
 Example: an independent restaurant owner tracking revenue growth, food cost, repeat customers, delivery share, and employee satisfaction before opening a second location.
 Secondary user: advisor or analyst
 An advisor, investment analyst, asset manager, senior executive, or finance partner who reviews several decisions or deals and needs to prioritize attention. This user values comparisons, historical context, sensitivity to changed assumptions, and drill-down to evidence.
-User needs
+
+### User needs
+
 Users need to:
 state what they are trying to understand, improve, or decide;
 capture the original assumption, target, or forecast behind that decision;
@@ -35,9 +45,13 @@ see current value, target, deviation, trend, period, source, and calculation con
 understand why a warning was raised and what evidence supports it;
 edit the dashboard without technical help;
 trust that the tool supports judgment rather than making the decision for them.
-Value proposition
-Dash turns a decision assumption and a small set of business files into a transparent, editable monitoring view. It helps users find out sooner when reality is moving away from the plan, while preserving the source data and reasoning needed for a human review.
-Product objectives
+
+### Value proposition
+
+dAIshi turns a decision assumption and a small set of business files into a transparent, editable monitoring view. It helps users find out sooner when reality is moving away from the plan, while preserving the source data and reasoning needed for a human review.
+
+### Product objectives
+
 The MVP will:
 prove that a user can define a decision context, assumptions, and KPIs;
 accept multiple Excel or CSV files and identify usable fields;
@@ -46,8 +60,10 @@ generate an editable dashboard with KPI cards, charts, tables, trends, and statu
 show the source, comparison period, and calculation behind every KPI and warning;
 surface a small number of relevant, prioritized deviations;
 make the first useful dashboard possible in less than ten minutes;
-demonstrate the concept using fictional or anonymized data.
-Success measures
+demonstrate the concept using fictional data.
+
+### Success measures
+
 The prototype is successful when a first-time user can:
 complete onboarding and choose a business context in under two minutes;
 choose or create at least three KPIs and define targets or warning thresholds;
@@ -58,14 +74,18 @@ identify the current value, target, trend, and source for a selected KPI;
 open a warning and explain what changed, over which period, and why it matters;
 edit and save the dashboard without assistance.
 Quality of the prototype should also be judged by calculation accuracy, clarity of source references, relevance of warnings, and whether users feel the product reduces review effort rather than adding work.
-Product principles
+
+### Product principles
+
 Evidence before explanation: Every value and warning should point to a source and calculation context.
-Human judgment remains central: Dash highlights changes and possible impact; the responsible person decides what to do.
+Human judgment remains central: dAIshi highlights changes and possible impact; the responsible person decides what to do.
 Useful by default: Recommendations, sample data, and sensible dashboard layouts help the user reach a first result quickly.
 Transparent uncertainty: Missing data, low confidence, conflicting files, and unsupported calculations are visible.
 Relevant attention: Prefer a few meaningful warnings over a stream of low-value notifications.
 Progressive detail: Show the important result first, then let users drill down into evidence.
-MVP non-goals
+
+### MVP non-goals
+
 The MVP will not:
 support every industry or provide a complete KPI library;
 connect to every business system or guarantee real-time synchronization;
@@ -76,8 +96,12 @@ implement complex enterprise permissions, team collaboration, or approval workfl
 send email or mobile notifications;
 provide complete GDPR compliance infrastructure for production customer data;
 require real company data for the prototype.
-Scope
-MVP user journey
+
+## 2. Scope
+
+
+### MVP user journey
+
 Onboard: Select an industry or example context, business area, position, and goal.
 Define: Choose recommended KPIs, add custom KPIs where needed, and set targets or warning thresholds.
 Upload: Add one or more Excel or CSV files.
@@ -86,7 +110,9 @@ Generate: Confirm the mapping and create the dashboard.
 Review: Scan KPI cards and prioritized warnings, then drill into the supporting data.
 Edit and save: Change date range, filters, cards, chart types, targets, and dashboard name.
 Manage: Review saved dashboards, data sources, alert rules, and privacy settings.
-Functional specifications
+
+### Functional specifications
+
 1. Onboarding and context selection
 The product must collect enough context to personalize recommendations:
 industry or example industry;
@@ -106,7 +132,7 @@ record the original assumption or expected outcome behind a KPI;
 edit or remove a KPI before dashboard generation.
 Example KPI categories include financial, operational, market, customer, project, team, and trading measures. Example KPIs include revenue growth, costs, profit, active projects, completion rate, occupancy, client satisfaction, billable hours, utilization, inventory, margin, and overdue tasks.
 3. File upload and data sources
-The MVP must accept one or more .xlsx, .xls, or .csv files. The upload experience must show:
+The MVP accepts one or more .xlsx or .csv files. The upload experience must show:
 file name and file type;
 upload status and validation status;
 row and column counts where available;
@@ -215,9 +241,14 @@ Data mapping: source field to KPI input, confidence, and user confirmation state
 KPI result: calculated value, period, comparison, status, and source references.
 Warning: rule, changed values, priority, impact, explanation, and evidence.
 Dashboard: layout, selected KPIs, filters, date range, name, and update history.
-Structure
-Information architecture
-Dash
+
+## 3. Structure
+
+
+### Information architecture
+
+```text
+dAIshi
 ├── Home / Saved dashboards
 │   ├── Dashboard overview
 │   └── Dashboard detail
@@ -231,7 +262,10 @@ Dash
 ├── Data sources
 ├── Alerts
 └── Settings and privacy
-Interaction model
+```
+
+### Interaction model
+
 The create flow is a guided sequence with a visible step indicator. Users can move back to earlier steps without losing confirmed selections. The dashboard is the main working surface after generation; management screens are secondary destinations.
 The interaction hierarchy is:
 identify the decision and important KPI;
@@ -239,14 +273,18 @@ show the current result and whether it is on track;
 explain the deviation or warning;
 expose the source and calculation;
 let the user edit the definition, mapping, or view.
-Navigation model
+
+### Navigation model
+
 The primary navigation should expose four destinations:
 Dashboards: saved dashboards and the active dashboard;
 Data sources: uploaded files and their validation state;
 Alerts: prioritized warnings across the available dashboards;
-Settings: profile, privacy, deletion, and prototype information.
+Settings provides theme, privacy, local deletion, and prototype information.
 The “Create dashboard” action should remain prominent from the dashboard home. During creation, the step navigation should be separated from the global navigation so users understand whether they are progressing through setup or browsing saved work.
-Key state transitions
+
+### Key state transitions
+
 Draft context
   → KPI selection
   → Files uploaded
@@ -256,7 +294,9 @@ Draft context
   → Dashboard available
   → Dashboard edited and saved
 A validation problem moves the user to “Mapping needs review” rather than blocking the entire flow. A KPI with insufficient data remains visible as unresolved and explains what is missing. A failed generation returns the user to a recoverable state with retry and edit options.
-Detail and drill-down pattern
+
+### Detail and drill-down pattern
+
 Every KPI card and warning opens a detail view or side panel with:
 summary;
 current and previous values;
@@ -267,73 +307,34 @@ calculation description;
 data-quality notes;
 related KPIs or warnings where available.
 This pattern is essential for trust and should be consistent across financial, operational, market, and trading examples.
-Skeleton
-Screen inventory
-Screen
-Purpose
-Key elements
-Primary actions
-Welcome / onboarding
-Explain value and setup
-Product purpose, three-step explanation, sample-data option
-Start, use sample data
-Context and goal
-Personalize the dashboard
-Industry, sector, position, goal, company/project
-Continue, back
-KPI selection
-Choose monitoring scope
-Recommended KPI groups, search, selected KPI list
-Select, continue
-Custom KPI creation
-Add a user-specific measure
-Name, definition, unit, target, threshold, period
-Save KPI, cancel
-Data upload
-Collect source information
-Dropzone, file list, formats, sample files, privacy notice
-Upload, remove, continue
-Mapping and validation
-Confirm data readiness
-Detected fields, KPI coverage, mapping controls, warnings, missing fields
-Confirm mapping, fix, back
-Generation progress
-Set expectations during analysis
-Progress stages, status messages, cancel/retry behavior
-Wait, retry, return to mapping
-Generated dashboard
-Monitor decisions and KPIs
-KPI cards, charts, filters, status, warnings, freshness, source links
-Inspect, edit, save
-KPI or warning detail
-Explain a result
-Current value, target, trend, calculation, source, impact, caveats
-Back, edit source or threshold
-Dashboard editing
-Customize the working view
-Layout controls, card selection, chart type, filters, thresholds
-Save, cancel
-Saved dashboards
-Return to existing work
-Dashboard list, warning count, context, last updated
-Open, rename, delete, create
-Data sources
-Review uploaded inputs
-Source list, file status, period, freshness, delete/re-upload
-Inspect, replace, delete
-Alerts
-Prioritize issues across dashboards
-Priority, changed assumption, impact, period, source
-Open detail, dismiss/archive later
-Settings and privacy
-Manage account and data controls
-Profile, privacy notice, delete controls, sample-data label
-Save, delete, review policy
 
-Interface and layout requirements
+## 4. Skeleton
+
+### Screen inventory
+
+| Screen | Purpose | Key elements | Primary actions |
+| --- | --- | --- | --- |
+| Welcome / onboarding | Explain value and setup | Product purpose, three-step explanation, sample-data option | Start, use sample data |
+| Context and goal | Personalize the dashboard | Industry, sector, position, goal, company/project | Continue, back |
+| KPI selection | Choose monitoring scope | Recommended KPI groups, search, selected KPI list | Select, continue |
+| Custom KPI creation | Add a user-specific measure | Name, definition, unit, target, threshold, period | Save KPI, cancel |
+| Data upload | Collect source information | Dropzone, file list, formats, sample files, privacy notice | Upload, remove, continue |
+| Mapping and validation | Confirm data readiness | Detected fields, KPI coverage, mapping controls, warnings, missing fields | Confirm mapping, fix, back |
+| Generation progress | Set expectations during analysis | Progress stages, status messages, cancel/retry behavior | Wait, retry, return to mapping |
+| Generated dashboard | Monitor decisions and KPIs | KPI cards, charts, filters, status, warnings, freshness, source links | Inspect, edit, save |
+| KPI or warning detail | Explain a result | Current value, target, trend, calculation, source, impact, caveats | Back, edit source or threshold |
+| Dashboard editing | Customize the working view | Layout controls, card selection, chart type, filters, thresholds | Save, cancel |
+| Saved dashboards | Return to existing work | Dashboard list, warning count, context, last updated | Open, rename, delete, create |
+| Data sources | Review uploaded inputs | Source list, file status, period, freshness, delete/re-upload | Inspect, replace, delete |
+| Alerts | Prioritize issues across dashboards | Priority, changed assumption, impact, period, source | Open detail, dismiss/archive later |
+| Settings and privacy | Manage local data and theme | Theme, privacy notice, and clear workspace controls | Switch theme, clear workspace |
+
+
+### Interface and layout requirements
+
 Global shell
 Persistent product name and current workspace or dashboard name.
-Clear primary navigation on desktop.
+Labeled bottom navigation in the phone layout.
 A prominent “Create dashboard” action.
 Breadcrumb or step context during setup.
 Consistent status colors with text labels; color must not be the only indicator.
@@ -346,14 +347,16 @@ Warning area: prioritized alerts with concise explanations and source links.
 Detail access: every card and warning is clickable or has an explicit details action.
 Footer or metadata area: source coverage, data freshness, and unresolved data issues.
 Upload and mapping layout
-Show the user’s files and the system’s interpretation side by side where practical.
+Show the user’s files and the system’s interpretation in the review flow.
 Use explicit “confirmed,” “needs review,” and “cannot calculate” states.
 Do not hide unresolved mappings behind a generic success message.
 Keep the original file name and field name visible in the review path.
 Responsive and accessibility expectations
-The prototype should work at common laptop and tablet widths. On narrow screens, dashboard cards may stack and filters may collapse, but the source and warning explanations must remain accessible.
+The prototype targets phone widths of 375–430 CSS pixels and supports a 320-pixel narrow layout. Cards may stack at narrow widths. Source and warning details remain accessible.
 The interface must use readable text, keyboard-accessible controls, visible focus states, sufficient contrast, labels for form inputs, and text alternatives for status colors and charts. Charts should provide an adjacent table or summary for users who cannot interpret the visualization.
-User stories
+
+### User stories
+
 Setup and definition
 As a business owner, I want to select my industry, sector, and position so that the product can recommend relevant KPIs.
 As a decision-maker, I want to record the goal or investment assumption behind my dashboard so that the numbers remain connected to the decision.
@@ -374,134 +377,58 @@ As a user, I want to change date ranges, filters, KPI cards, chart types, and th
 As a user, I want to save and reopen dashboards so that I can monitor the same decision over time.
 As a user, I want to delete uploaded files and dashboards so that I retain control of my information.
 As a prototype user, I want clear sample-data labeling so that I do not confuse demonstration results with live business data.
-Functional requirements
-ID
-Requirement
-Priority
-FR-01
-The system shall collect industry, sector, position, and monitoring goal during onboarding.
-Must
-FR-02
-The system shall recommend KPIs based on the selected context.
-Must
-FR-03
-The system shall let users select, remove, and reorder KPIs before generation.
-Must
-FR-04
-The system shall let users create a custom KPI with a definition, unit, target, threshold, and period.
-Should
-FR-05
-The system shall let users record an original assumption or expected outcome.
-Must
-FR-06
-The system shall accept multiple Excel and CSV uploads that must have a live connection link
-Must
-FR-07
-The system shall validate file type, readability, structure, and basic field formats.
-Must
-FR-08
-The system shall show detected fields and KPI coverage for each uploaded source.
-Must
-FR-09
-The system shall suggest mappings between source fields and KPI inputs.
-Must
-FR-10
-The system shall let users accept, edit, or leave mappings unresolved.
-Must
-FR-11
-The system shall prevent unsupported or uncalculated KPIs from appearing as valid results.
-Must
-FR-12
-The system shall show generation progress and recoverable failure states.
-Must
-FR-13
-The system shall generate KPI cards, charts or tables, trends, filters, and status indicators.
-Must
-FR-14
-The system shall show source, period, target, comparison, and calculation context for each KPI.
-Must
-FR-15
-The system shall generate prioritized in-dashboard warnings for meaningful deviations.
-Must
-FR-16
-The system shall explain each warning using changed values, comparison period, source, rule, and impact when available.
-Must
-FR-17
-The system shall support drill-down from KPI cards and warnings to supporting details.
-Must
-FR-18
-The system shall let users edit dashboard name, date range, filters, KPI cards, chart types, targets, and thresholds.
-Must
-FR-19
-The system shall save, reopen, and delete dashboards.
-Must
-FR-20
-The system shall let users inspect, replace, and delete uploaded data sources.
-Must
-FR-21
-The system shall provide empty, loading, validation, and error states for the documented edge cases.
-Must
-FR-22
-The system shall label fictional, anonymized, and user-uploaded data distinctly.
-Must
-FR-23
-The system shall provide privacy guidance and deletion controls before real company data is considered.
-Must
-FR-24
-The system should provide sample consulting and restaurant data for demonstration.
-Should
-FR-25
-The system may provide a cross-dashboard Alerts screen using the same warning objects as the dashboard.
-Should
+### Functional requirements
 
-Non-functional requirements
-ID
-Requirement
-Target or expectation
-NFR-01
-Usability
-A first-time user can create a basic dashboard in under ten minutes using sample data.
-NFR-02
-Clarity
-Users can identify the current value, target, status, period, and source without technical help.
-NFR-03
-Accuracy
-Calculations must be deterministic for the same input data, KPI definition, and period.
-NFR-04
-Explainability
-Every displayed result and warning must expose its source and calculation context.
-NFR-05
-Trust
-The product must distinguish calculated facts, detected issues, suggestions, and uncertainty.
-NFR-06
-Performance
-Sample-data upload, validation, and dashboard generation should feel responsive, with progress shown for longer work.
-NFR-07
-Recovery
-Refreshing, leaving, or failing during generation must not silently discard confirmed setup or saved dashboards.
-NFR-08
-Security
-The prototype must avoid real confidential data and clearly communicate data-handling limitations.
-NFR-09
-Privacy
-Users must be able to delete uploaded files and dashboards; retention and GDPR work must be defined before production use.
-NFR-10
-Accessibility
-Keyboard navigation, visible focus, readable contrast, labeled controls, and non-color status indicators are required.
-NFR-11
-Compatibility
-The prototype should support current desktop browsers and common laptop and tablet viewport sizes.
-NFR-12
-Maintainability
-KPI definitions, thresholds, sample data, and content should be configurable rather than embedded in individual screens.
-NFR-13
-Scalability boundary
-The MVP may limit file size and row count, but limits must be stated before upload and handled with a clear recovery path.
-NFR-14
-Human oversight
-The product must not present an AI suggestion as a final business, investment, or operational decision.
+| ID | Requirement | Priority |
+| --- | --- | --- |
+| FR-01 | The system shall collect industry, sector, position, and monitoring goal during onboarding. | Must |
+| FR-02 | The system shall recommend KPIs based on the selected context. | Must |
+| FR-03 | The system shall let users select, remove, and reorder KPIs before generation. | Must |
+| FR-04 | The system shall let users create a custom KPI with a definition, unit, target, threshold, and period. | Should |
+| FR-05 | The system shall let users record an original assumption or expected outcome. | Must |
+| FR-06 | The system accepts multiple local XLSX or CSV files and processes them in the browser. | Must |
+| FR-07 | The system shall validate file type, readability, structure, and basic field formats. | Must |
+| FR-08 | The system shall show detected fields and KPI coverage for each uploaded source. | Must |
+| FR-09 | The system shall suggest mappings between source fields and KPI inputs. | Must |
+| FR-10 | The system shall let users accept, edit, or leave mappings unresolved. | Must |
+| FR-11 | The system shall prevent unsupported or uncalculated KPIs from appearing as valid results. | Must |
+| FR-12 | The system shall show generation progress and recoverable failure states. | Must |
+| FR-13 | The system shall generate KPI cards, charts or tables, trends, filters, and status indicators. | Must |
+| FR-14 | The system shall show source, period, target, comparison, and calculation context for each KPI. | Must |
+| FR-15 | The system shall generate prioritized in-dashboard warnings for meaningful deviations. | Must |
+| FR-16 | The system shall explain each warning using changed values, comparison period, source, rule, and impact when available. | Must |
+| FR-17 | The system shall support drill-down from KPI cards and warnings to supporting details. | Must |
+| FR-18 | The system shall let users edit dashboard name, date range, filters, KPI cards, chart types, targets, and thresholds. | Must |
+| FR-19 | The system shall save, reopen, and delete dashboards. | Must |
+| FR-20 | The system shall let users inspect, replace, and delete uploaded data sources. | Must |
+| FR-21 | The system shall provide empty, loading, validation, and error states for the documented edge cases. | Must |
+| FR-22 | The system labels bundled fictional samples and local uploads distinctly. Use fictional data for both. | Must |
+| FR-23 | The system shall provide privacy guidance and deletion controls before real company data is considered. | Must |
+| FR-24 | The system should provide sample consulting and restaurant data for demonstration. | Should |
+| FR-25 | The system may provide a cross-dashboard Alerts screen using the same warning objects as the dashboard. | Should |
 
-Screens affected
+### Non-functional requirements
+
+| ID | Requirement | Target or expectation |
+| --- | --- | --- |
+| NFR-01 | Usability | A first-time user can create a basic dashboard in under ten minutes using sample data. |
+| NFR-02 | Clarity | Users can identify the current value, target, status, period, and source without technical help. |
+| NFR-03 | Accuracy | Calculations must be deterministic for the same input data, KPI definition, and period. |
+| NFR-04 | Explainability | Every displayed result and warning must expose its source and calculation context. |
+| NFR-05 | Trust | The product must distinguish calculated facts, detected issues, suggestions, and uncertainty. |
+| NFR-06 | Performance | Sample-data upload, validation, and dashboard generation should feel responsive, with progress shown for longer work. |
+| NFR-07 | Recovery | Refreshing, leaving, or failing during generation must not silently discard confirmed setup or saved dashboards. |
+| NFR-08 | Security | The prototype must avoid real confidential data and clearly communicate data-handling limitations. |
+| NFR-09 | Privacy | Users must be able to delete uploaded files and dashboards; retention and GDPR work must be defined before production use. |
+| NFR-10 | Accessibility | Keyboard navigation, visible focus, readable contrast, labeled controls, and non-color status indicators are required. |
+| NFR-11 | Compatibility | The prototype targets current phone browsers, with a centered phone layout at larger widths. |
+| NFR-12 | Maintainability | KPI definitions, thresholds, sample data, and content should be configurable rather than embedded in individual screens. |
+| NFR-13 | Scalability boundary | The MVP may limit file size and row count, but limits must be stated before upload and handled with a clear recovery path. |
+| NFR-14 | Human oversight | The product must not present an AI suggestion as a final business, investment, or operational decision. |
+
+
+### Screens affected
+
 The following screens are in scope for the MVP and are directly affected by these requirements:
 Welcome or onboarding
 Department, sector, position, and goal selection
@@ -518,7 +445,9 @@ Data sources
 Alerts
 Settings and privacy
 The screens most important to the product proof are KPI selection, data mapping and validation, the generated dashboard, and KPI or warning detail. If implementation time is constrained, these screens should receive the highest fidelity because they demonstrate personalization, source traceability, and the shift from raw data to a decision-ready view.
-Release acceptance checklist
+
+### Release acceptance checklist
+
 The MVP is ready for prototype review when:
 a user can complete the guided flow from onboarding to a saved dashboard;
 sample consulting and restaurant files can be uploaded successfully;
@@ -529,7 +458,7 @@ at least one meaningful warning can be opened and verified against its source da
 unresolved or invalid data is never represented as a confident result;
 the user can edit and save the dashboard;
 the user can delete a data source and dashboard;
-the interface clearly labels fictional or anonymized data and its prototype limitations;
+the interface clearly labels fictional sample data and explains the prototype’s limitations;
 the main flow works with keyboard navigation and does not rely on color alone;
 final decisions and recommendations are explicitly left to the responsible human user.
 

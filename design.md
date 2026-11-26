@@ -1,6 +1,6 @@
 # dAIshi Design System
 
-[Design guidance](#design-reference-and-phone-adaptation) · [Design assets](#design-assets)
+[Design guidance](#design-reference-and-phone-adaptation) · [Storybook](#storybook) · [Design assets](#design-assets)
 
 ## Design reference and phone adaptation
 
@@ -27,7 +27,7 @@ dAIshi is a calm, practical operations dashboard for restaurant teams. The inter
 | Token | Light theme | Purpose |
 | --- | --- | --- |
 | Ink | `#20211f` | Primary text, dark controls, chart lines |
-| Muted | `#72756f` | Supporting text and metadata |
+| Muted | `#686c64` | Supporting text and metadata |
 | Canvas | `#f4f5f2` | Application background |
 | Surface | `#ffffff` | Cards, panels, forms |
 | Line | `#e2e4de` | Borders and dividers |
@@ -35,7 +35,7 @@ dAIshi is a calm, practical operations dashboard for restaurant teams. The inter
 | Soft green | `#e9f3ee` | Positive status backgrounds |
 | Red | `#a4493e` | High-severity and negative status |
 | Soft red | `#f8ece9` | High-severity backgrounds |
-| Amber | `#9a6c24` | Warnings, targets, watch status |
+| Amber | `#865d20` | Warnings, targets, watch status |
 | Soft amber | `#f8f0df` | Warning backgrounds |
 
 Dark mode uses a deep olive-black canvas, dark surfaces, softened light text, and brighter semantic accents. Pair status color with a text label or icon. Check contrast for final text sizes before release.
@@ -98,7 +98,7 @@ On phones, evidence opens in a sheet from the bottom over a translucent backdrop
 
 Show the KPI or warning title, value, status, calculation, source file, fields, period, and caveats. Keep the underlying dashboard context. Close actions and Escape dismiss the sheet; keyboard focus stays inside while open and returns to the triggering control afterward. Prevent background scrolling.
 
-The creation flow uses the same phone sheet treatment with a visible step indicator, choice cards, labeled inputs, and Back/Continue actions. Preserve confirmed selections when moving between steps. The supplied sample walkthrough is visual inspiration; the complete flow in [product.md](product.md) and [architecture.md](architecture.md) still needs implementation.
+The creation flow uses a visible step indicator, choice cards, labeled inputs, and Back/Continue actions. Preserve confirmed selections when moving between steps. See [product.md](product.md) and [architecture.md](architecture.md) for the flow.
 
 ## Sources, settings, and privacy
 
@@ -117,6 +117,16 @@ Support keyboard navigation, visible focus, labeled fields, semantic buttons, ac
 The local design prototype passed its TypeScript check and Vite production build. Browser checks found no horizontal overflow at widths of 320, 375, 390, and 430 CSS pixels; wider layout checks also passed. Navigation, KPI evidence sheets, warning details, Escape dismissal, theme switching, and the sample setup walkthrough passed without JavaScript errors.
 
 These checks validate the current design prototype and do not establish completion of the full product workflow or production accessibility compliance.
+
+## Storybook
+
+Open the [published component catalogue](https://oliviaescp.github.io/ESCP-2627DT-A1/storybook/) or run `npm ci` followed by `npm run storybook` and open `http://localhost:6006`. The stories render the prototype’s React components with its shared stylesheet. Switch themes with the toolbar, and resize the preview to check phone widths. Use `npm run build-storybook` to generate a static catalogue.
+
+| Story | What to inspect |
+| --- | --- |
+| [Status badge](src/components/Badge.stories.tsx) | On track, Watch, Needs attention, Cannot calculate, and Sample data labels. |
+| [Bottom sheet](src/components/Sheet.stories.tsx) | Open source details, dismiss with Escape or a close control, and check that focus returns to the opener. |
+| [Dashboard](src/features/DashboardView.stories.tsx) | Restaurant and consulting samples, KPI evidence, chart styles, warnings, and the unavailable state when mappings need confirmation. |
 
 ## Design assets
 
@@ -140,7 +150,7 @@ The ZIP is preserved unchanged as reference material. It contains React and CSS 
 
 <img src="assets/design/daishi-phone-evidence.png" alt="Phone evidence sheet showing a KPI value, calculation, source reference, and close control" width="390" />
 
-These previews show a design prototype using fictional restaurant data. Navigation, evidence panels, theme switching, and a sample setup walkthrough were checked in the browser. Uploads, dashboard generation, dashboard editing, and data management remain product implementation work. No Storybook instance is included in the supplied archive.
+These reference previews use fictional restaurant data. The current components and sample states are available in [Storybook](#storybook).
 
 ### Dark theme preview
 

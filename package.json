@@ -10,7 +10,9 @@
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "papaparse": "^5.5.3",
@@ -21,9 +23,16 @@
     "recharts": "^3.3.0",
     "zod": "^4.1.12"
   },
+  "overrides": {
+    "@joshwooding/vite-plugin-react-docgen-typescript": {
+      "glob": "^14.0.2"
+    }
+  },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
     "@playwright/test": "^1.56.1",
+    "@storybook/addon-docs": "10.6.9",
+    "@storybook/react-vite": "10.6.9",
     "@tailwindcss/vite": "^4.1.16",
     "@types/node": "^24.9.1",
     "@types/papaparse": "^5.3.16",
@@ -31,6 +40,7 @@
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
     "prettier": "^3.9.10",
+    "storybook": "10.6.9",
     "tailwindcss": "^4.1.16",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",

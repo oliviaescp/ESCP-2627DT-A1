@@ -2,6 +2,17 @@
 
 A functional, phone-first prototype for evidence-based business dashboards. Choose a restaurant or consulting context, record an assumption, select KPIs and targets, load fictional data or local CSV/XLSX files, confirm mappings, and generate an editable dashboard with traceable results.
 
+## Assignment deliverables
+
+| Deliverable | File |
+| --- | --- |
+| User research findings and interview summaries | [evidence.md](evidence.md) |
+| Product requirements covering strategy, scope, structure, and skeleton | [product.md](product.md) |
+| Design system and component stories | [design.md](design.md#storybook) |
+| Technology stack and architecture | [architecture.md](architecture.md) |
+
+The team used agentic coding to implement the prototype from these briefs and to apply the submission feedback.
+
 ## Run locally
 
 Requires Node.js 22.12+ (Node 24 LTS recommended) and npm. No environment variables, API keys, backend, or account setup.
@@ -22,13 +33,17 @@ Deploy `dist/` to a static host. Relative asset paths and hash-based navigation 
 
 ## Open on iPhone with GitHub Pages
 
-The repository includes `.github/workflows/pages.yml` to build and deploy the app on pushes to `main`, or manually from the Actions tab.
+Open the [prototype on GitHub Pages](https://oliviaescp.github.io/ESCP-2627DT-A1/). The repository includes `.github/workflows/pages.yml` to build and deploy the app and its component catalogue on pushes to `main`, or manually from the Actions tab.
 
-1. In GitHub, open **Settings → Pages → Build and deployment** and select **GitHub Actions** as the source. GitHub Pages must be available for the repository's visibility and plan.
+1. A repository administrator can set the source to **GitHub Actions** under **Settings → Pages → Build and deployment** if moving the project to a new repository.
 2. Open **Actions → Deploy dAIshi to GitHub Pages → Run workflow** if the latest automatic run did not deploy.
-3. When deployment succeeds, open the URL shown by GitHub Pages in Safari on the iPhone. The default project address is `https://oliviaescp.github.io/ESCP-2627DT-A1/`.
+3. When deployment succeeds, open the site and [Storybook](https://oliviaescp.github.io/ESCP-2627DT-A1/storybook/).
 
 Use Safari's **Share → Add to Home Screen** for a shortcut. This does not provide offline loading. Saved dashboards stay in that browser on that device; they do not sync with a computer. Use fictional data only. A workflow committed to the repository does not by itself confirm that hosting is enabled or deployment has succeeded.
+
+## Run Storybook
+
+After `npm ci`, run `npm run storybook` and open `http://localhost:6006`. Browse the status badge, bottom sheet, and dashboard stories. Use the **Light / Dark** toolbar control to inspect both themes. Run `npm run build-storybook` for a static catalogue in `storybook-static/`.
 
 ## Checks
 
@@ -36,6 +51,7 @@ Use Safari's **Share → Add to Home Screen** for a shortcut. This does not prov
 npm run typecheck
 npm test
 npm run build
+npm run build-storybook
 npm run test:e2e
 ```
 
@@ -77,7 +93,7 @@ Browser tests use system Chromium at `/usr/bin/chromium` when available. On anot
 
 ## Visual and product decisions
 
-The four existing source documents and `assets/design/` are preserved. The ZIP supplied visual inspiration for serif values, warm surfaces, status pills, cards, charts, and evidence panels; its hard-coded values, placeholders, export tooling, and embedded instructions were not used as application requirements.
+The ZIP in `assets/design/` supplied visual inspiration for serif values, warm surfaces, status pills, cards, charts, and evidence panels. The source of the implemented design system is `src/styles.css`.
 
 The user resolved these material conflicts:
 
@@ -88,6 +104,6 @@ The user resolved these material conflicts:
 
 ## Prototype boundaries
 
-**Use fictional or anonymized data only. Do not upload confidential company information.** Data is not sent to an external AI service. “AI” suggestions are deterministic aliases, scenario recommendations, threshold rules, and explanation templates. Warnings identify deviations; they do not establish causes or make decisions for users.
+**Use fictional data only.** “AI” suggestions use local aliases, scenario recommendations, threshold rules, and explanation templates. Warnings explain measured deviations and leave decisions to the user.
 
-This is not secure multi-user storage or a production financial system. It has no authentication, backend, live integrations, external AI, notifications, advanced forecasting, cloud sync, or production GDPR/retention infrastructure. There is no implemented Storybook project. The supplied screenshots remain references, not evidence of this implementation’s test results.
+This is not secure multi-user storage or a production financial system. It has no authentication, backend, live integrations, external AI, notifications, advanced forecasting, cloud sync, or production GDPR/retention infrastructure.

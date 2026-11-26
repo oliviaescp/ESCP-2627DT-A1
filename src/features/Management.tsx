@@ -132,7 +132,7 @@ export function SourcesView({
         <p className="subtitle">The files behind your decisions.</p>
       </header>
       <div className="notice">
-        <strong>Fictional or anonymized data only.</strong>
+        <strong>Use fictional data only.</strong>
         <p>
           Files are parsed in this browser. Replacing a source updates the
           linked dashboards and requires mapping review. Deleting a source makes
@@ -389,8 +389,8 @@ export function SettingsView({
       <section className="panel stack">
         <h2>Prototype privacy</h2>
         <div className="human-note">
-          <strong>Do not upload confidential company data.</strong>
-          <p>Use fictional or anonymized information only.</p>
+          <strong>Use fictional data only.</strong>
+          <p>Sample and uploaded data stay in this browser.</p>
         </div>
         <p>
           CSV and XLSX parsing, KPI calculations, mapping suggestions, and

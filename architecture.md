@@ -25,7 +25,7 @@ The architecture keeps business calculations and domain rules separate from the 
 
 ### Why local-first
 
-The original discussion explicitly limits the first version to fictional or anonymized data, with no users, no live integrations, no external database, and no production-grade privacy controls. A local-first browser application is therefore the most appropriate architecture.
+The assignment limits the prototype to fictional data. A local-first browser application supports the demo with local files, rules, and storage.
 
 It has four practical advantages:
 
@@ -72,7 +72,7 @@ The code will expose these behaviors behind simple service interfaces so a real 
 
 ## Technology stack
 
-The prototype should use the following technologies without pinning versions in product documentation. The implementation should use the current compatible versions selected when the project is created.
+The prototype uses the stack below. The lockfile records the versions installed by `npm ci`.
 
 ### Runtime and application
 
@@ -88,7 +88,7 @@ The prototype should use the following technologies without pinning versions in 
 
 - **CSS framework:** Tailwind CSS
 - **Component approach:** small local component library inside the project
-- **Icons:** a lightweight icon package or inline SVG icons
+- **Icons:** inline SVG icons
 - **Charts:** Recharts for one or two simple trend visualizations
 - **Fonts:** system sans-serif stack; no external font dependency is required
 
@@ -97,7 +97,7 @@ The interface should use a small token set for spacing, typography, surfaces, bo
 ### Data processing and validation
 
 - **CSV parsing:** Papa Parse
-- **Excel parsing:** SheetJS `xlsx`
+- **Excel parsing:** `read-excel-file` for XLSX
 - **Schema validation:** Zod
 - **State management:** React Context plus `useReducer`
 - **Persistence:** browser `localStorage`
@@ -105,93 +105,25 @@ The interface should use a small token set for spacing, typography, surfaces, bo
 
 No server-side runtime is required for the prototype.
 
-### Suggested dependencies
+### Development and static hosting
 
-The initial project can use a small dependency set:
-
-```text
-react
-react-dom
-react-router-dom
-papaparse
-xlsx
-zod
-recharts
-tailwindcss
-vite
-typescript
-```
-
-Testing dependencies should be added only if the implementation includes automated tests:
-
-```text
-vitest
-@testing-library/react
-@testing-library/jest-dom
-playwright
-```
+- **Component catalogue:** Storybook for React and Vite, with the shared application stylesheet and fictional data
+- **Verification:** Vitest for domain and infrastructure, Playwright and axe for browser checks
+- **Deployment:** GitHub Actions publishes the static Vite app and Storybook to GitHub Pages
 
 ## Application structure
 
-The project should use a lightweight layered structure. Feature folders keep related screens together, while domain and application layers prevent calculations from becoming coupled to React components.
-
 ```text
+.storybook/         Storybook configuration and shared preview theme
 src/
-├── app/
-│   ├── App.tsx
-│   ├── routes.tsx
-│   ├── AppProviders.tsx
-│   └── AppErrorBoundary.tsx
-├── components/
-│   ├── Button.tsx
-│   ├── Card.tsx
-│   ├── Badge.tsx
-│   ├── Input.tsx
-│   ├── Select.tsx
-│   ├── Modal.tsx
-│   ├── EmptyState.tsx
-│   ├── ErrorState.tsx
-│   ├── ProgressSteps.tsx
-│   ├── MobileHeader.tsx
-│   └── BottomNavigation.tsx
-├── features/
-│   ├── onboarding/
-│   ├── kpis/
-│   ├── uploads/
-│   ├── mappings/
-│   ├── generation/
-│   ├── dashboards/
-│   ├── alerts/
-│   └── settings/
-├── domain/
-│   ├── models.ts
-│   ├── kpiDefinitions.ts
-│   ├── calculations.ts
-│   ├── warningRules.ts
-│   ├── mappingRules.ts
-│   └── sampleScenarios.ts
-├── application/
-│   ├── dashboardWorkflow.ts
-│   ├── generateDashboard.ts
-│   ├── validateSource.ts
-│   ├── suggestMappings.ts
-│   └── explainWarning.ts
-├── infrastructure/
-│   ├── fileParsers/
-│   │   ├── parseCsv.ts
-│   │   ├── parseXlsx.ts
-│   │   └── normalizeRows.ts
-│   ├── persistence/
-│   │   ├── localStorageRepository.ts
-│   │   └── storageKeys.ts
-│   └── ai/
-│       └── deterministicAdvisor.ts
-├── styles/
-│   ├── index.css
-│   └── tokens.css
-├── types/
-│   └── external.d.ts
-└── main.tsx
+├── app/           Routes, workspace state, error handling, and dashboard workflow
+├── components/    Shared UI primitives and component stories
+├── features/      Creation, dashboard, and workspace management screens
+├── domain/        KPI definitions, calculations, mapping, warnings, and sample data
+├── infrastructure/  Local file parsing, validation, and persistence
+├── styles.css     Design tokens and phone layouts
+└── main.tsx       Browser entry point
+tests/             Playwright journeys and fictional upload fixtures
 ```
 
 ### Layer responsibilities
@@ -212,13 +144,9 @@ Contains screens, feature-specific components, and feature-level hooks. Each fea
 
 Contains business concepts and pure functions. The domain layer must not import React, browser APIs, or charting libraries.
 
-#### `application`
-
-Contains use cases that coordinate domain functions, parsing results, state updates, and persistence. These are the main boundary between the UI and the underlying product behavior.
-
 #### `infrastructure`
 
-Contains browser-specific implementations such as file readers, parsers, localStorage, and the deterministic AI adapter.
+Contains browser-specific implementations for file reading, parsing, validation, and localStorage.
 
 ## Mobile-only application shell
 
@@ -327,7 +255,7 @@ type StorageEnvelope = {
 };
 ```
 
-If the stored version is unsupported or corrupted, the application should discard the invalid local workspace, show a recovery message, and start with sample data or an empty workspace.
+If the stored version is unsupported or corrupted, the app starts with an empty recovery workspace and pauses saves. The stored copy stays available until the user clears it in Settings.
 
 ## Domain model
 
@@ -750,7 +678,7 @@ This prototype is not a production secure data system.
 
 It must:
 
-- use fictional or anonymized sample data;
+- use fictional sample data;
 - warn users not to upload confidential business data;
 - keep file parsing in the browser;
 - avoid external AI calls;
@@ -773,7 +701,7 @@ The production version would require authentication, authorization, encrypted st
 ### Create and run
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -786,19 +714,14 @@ npm run build
 npm run preview
 ```
 
-### Recommended scripts
+### Available checks and component catalogue
 
-```json
-{
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "eslint ."
-  }
-}
+```bash
+npm run typecheck
+npm test
+npm run test:e2e
+npm run storybook
+npm run build-storybook
 ```
 
 No environment variables are required for the prototype. If a future integration needs configuration, it must be added through documented `VITE_` variables and must never contain private server secrets.
@@ -921,7 +844,7 @@ Verify the app on a narrow phone viewport for:
 
 The architecture and implementation are sufficient for the draft when:
 
-- the app runs locally with `npm install` and `npm run dev`;
+- the app runs locally with `npm ci` and `npm run dev`;
 - the experience is usable in a phone-sized viewport;
 - no backend or account is required;
 - a user can complete the full guided flow with sample data;

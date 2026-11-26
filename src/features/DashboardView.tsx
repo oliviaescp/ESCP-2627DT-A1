@@ -502,12 +502,16 @@ function TrendChart({
         </select>
       </label>
       <p className="legend">
-        {selected.name} · {hasCost ? "Food cost (dashed amber) · " : ""}Target
-        (green)
+        {selected.name}
+        {hasCost &&
+          (dashboard.chartType === "line"
+            ? " · Food cost (dashed amber)"
+            : " · Food cost (amber)")}
+        {selected.target !== undefined && " · Target (green)"}
       </p>
       {data.length > 0 ? (
         <div
-          style={{ width: "100%", height: 220, minWidth: 0 }}
+          style={{ width: "100%", height: 220, minWidth: 0, overflow: "clip" }}
           aria-label={`${selected.name} monthly trend. Supporting values follow.`}
           role="img"
         >
