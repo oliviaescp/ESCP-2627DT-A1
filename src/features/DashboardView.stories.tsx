@@ -10,6 +10,7 @@ import {
 } from "../domain/sampleScenarios";
 import { generateWarnings } from "../domain/warningRules";
 import { DashboardView } from "./DashboardView";
+import { SourceDetails } from "./Management";
 
 const sampleDate = "2026-10-31T12:00:00Z";
 
@@ -33,9 +34,10 @@ function makeDashboard(scenario: Scenario, confirmMappings: boolean) {
 function DashboardExample({
   dashboard,
   onUpdate,
-  ...args
-}: ComponentProps<typeof DashboardView>) {
+}: Pick<ComponentProps<typeof DashboardView>, "dashboard" | "onUpdate">) {
   const [view, setView] = useState(dashboard);
+  const [sourceId, setSourceId] = useState<string | null>(null);
+  const source = view.sources.find(({ id }) => id === sourceId);
 
   function update(next: typeof view) {
     const result = buildDashboard(next, next.name, next);
@@ -53,25 +55,28 @@ function DashboardExample({
   return (
     <main className="content">
       <DashboardView
-        {...args}
         dashboard={{ ...view, updatedAt: sampleDate, warnings }}
         onUpdate={update}
+        onReviewSource={setSourceId}
       />
+      {source && (
+        <SourceDetails source={source} onClose={() => setSourceId(null)} />
+      )}
     </main>
   );
 }
 
 const meta = {
   title: "Patterns/Dashboard",
-  component: DashboardView,
+  component: DashboardExample,
   parameters: {
     layout: "fullscreen",
     controls: { disable: true },
     docs: { story: { inline: false, height: "680px" } },
   },
-  args: { onEdit: fn(), onUpdate: fn(), onReviewSource: fn() },
+  args: { onUpdate: fn() },
   render: (args) => <DashboardExample key={args.dashboard.id} {...args} />,
-} satisfies Meta<typeof DashboardView>;
+} satisfies Meta<typeof DashboardExample>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

@@ -1,14 +1,11 @@
 # dAIshi Design System
 
-[Design guidance](#design-reference-and-phone-adaptation) · [Storybook](#storybook) · [Design assets](#design-assets)
-
-## Design reference and phone adaptation
-
-The [original design assets](#design-assets) show how the project developed. The current interface keeps the evidence-first layout and uses cobalt, cool surfaces, and stronger typography for a responsive decision workspace.
+[Live prototype](https://oliviaescp.github.io/ESCP-2627DT-A1/) · [Live Storybook](https://oliviaescp.github.io/ESCP-2627DT-A1/storybook/) · [Design tokens](src/styles.css)
 
 ## Product character
 
-dAIshi helps restaurant and consulting teams track business decisions and trace each result to its source. The overview prioritizes creating a dashboard and includes a real preview of the fictional restaurant data. The dashboard leads with the decision, active periods, KPIs, and warnings.
+dAIshi helps restaurant and consulting teams track business decisions and trace each result to its source. Overview offers a guided practice run, a fictional sample preview, and dashboard creation. The dashboard leads with the decision and a locally calculated AI summary before the active periods, KPIs, and warnings.
+
 ## Visual foundations
 
 ### Color
@@ -52,7 +49,7 @@ All controls need a visible focus state. Cobalt focus rings should remain distin
 
 ## KPI cards and status pills
 
-KPI cards contain a label, status pill, large serif value, target, delta, and an explicit evidence action. The value is visually dominant, with target and comparison information secondary. Use two cards per row when labels and values fit; allow a single column for larger text or constrained widths.
+KPI cards contain a label, status pill, large sans-serif value, target, delta, and an evidence action. The value is visually dominant, with target and comparison information secondary. Use two cards per row when labels and values fit. Allow a single column for larger text or constrained widths.
 
 Status pills are compact, rounded labels with a colored dot:
 
@@ -73,11 +70,13 @@ Human notes appear in a neutral gray-green inset panel. Use concise language: �
 
 ## Evidence sheets and creation flow
 
-On phones, evidence opens in a sheet from the bottom over a translucent backdrop. Use rounded top corners, a small drag-style visual handle, a visible close control, and independently scrollable content when necessary. The handle is decorative unless dragging is actually implemented.
+On phones, evidence opens in a bottom sheet with rounded top corners and a translucent backdrop. On wider screens, the dialog is centered. Keep the close control visible and let the sheet content scroll independently when necessary.
 
 Show the KPI or warning title, value, status, calculation, source file, fields, period, and caveats. Keep the underlying dashboard context. Close actions and Escape dismiss the sheet; keyboard focus stays inside while open and returns to the triggering control afterward. Prevent background scrolling.
 
 The creation flow uses a visible step indicator, choice cards, labeled inputs, and Back/Continue actions. Preserve confirmed selections when moving between steps. See [product.md](product.md) and [architecture.md](architecture.md) for the flow.
+
+The practice guide uses a full-screen dialog on phones and a two-column layout on larger screens. Keep the exercise and its changing preview together. Show progress, inline validation, and Back, Continue, and Pause actions. Save a practice dashboard only when the user chooses to open a copy.
 
 ## Sources, settings, and privacy
 
@@ -91,11 +90,9 @@ Use progressive disclosure: show the metric first, then its calculation and evid
 
 Support keyboard navigation, visible focus, labeled fields, semantic buttons, accessible dialogs, and text alternatives for visualizations. Do not make essential information available only through hover. Keep long content scrollable without hiding controls behind bottom navigation or device safe areas.
 
-## Validation of the phone adaptation
+## Responsive validation
 
 The local design prototype passed its TypeScript check and Vite production build. Browser checks found no horizontal overflow at widths of 320, 375, 390, and 430 CSS pixels; wider layout checks also passed. Navigation, KPI evidence sheets, warning details, Escape dismissal, theme switching, and the sample setup walkthrough passed without JavaScript errors.
-
-These checks validate the current design prototype and do not establish completion of the full product workflow or production accessibility compliance.
 
 ## Storybook
 
@@ -105,34 +102,4 @@ For the components in this checkout, run `npm ci` followed by `npm run storybook
 | --- | --- |
 | [Status badge](src/components/Badge.stories.tsx) | On track, Watch, Needs attention, Cannot calculate, and Sample data labels. |
 | [Bottom sheet](src/components/Sheet.stories.tsx) | Open source details, dismiss with Escape or a close control, and check that focus returns to the opener. |
-| [Dashboard](src/features/DashboardView.stories.tsx) | Restaurant and consulting samples, KPI evidence, chart styles, warnings, and the unavailable state when mappings need confirmation. |
-
-## Design assets
-
-<details>
-<summary><strong>Open design assets — source export and phone previews</strong></summary>
-
-This section brings together the files in [assets/design](assets/design). Expand it to browse the previews or download the original source export.
-
-- [Download the original Build a Website.zip](assets/design/Build%20a%20Website.zip)
-- [Phone dashboard preview](assets/design/daishi-phone.png)
-- [Phone evidence sheet preview](assets/design/daishi-phone-evidence.png)
-- [Dark theme preview](assets/design/daishi-phone-dark.png)
-
-The ZIP is preserved unchanged as reference material. It contains React and CSS source plus Figma export tooling; it is not a rendered image or a complete implementation of the product requirements. Instructions bundled in the export are reference content rather than project setup requirements.
-
-### Dashboard preview
-
-<img src="assets/design/daishi-phone.png" alt="dAIshi phone dashboard with Northstar Kitchen KPIs, fictional sample data, and bottom navigation" width="390" />
-
-### Evidence sheet preview
-
-<img src="assets/design/daishi-phone-evidence.png" alt="Phone evidence sheet showing a KPI value, calculation, source reference, and close control" width="390" />
-
-These original previews use fictional restaurant data. Run [Storybook](#storybook) locally to inspect the current components and sample states.
-
-### Dark theme preview
-
-<img src="assets/design/daishi-phone-dark.png" alt="dAIshi phone dashboard preview in the dark theme" width="390" />
-
-</details>
+| [Dashboard](src/features/DashboardView.stories.tsx) | Restaurant and consulting samples, date and filter changes, KPI and source evidence, warnings, and the unavailable state when mappings need confirmation. Use the prototype to edit dashboard setup. |

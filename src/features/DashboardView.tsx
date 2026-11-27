@@ -504,7 +504,7 @@ export function DashboardView({
   onReviewSource,
 }: {
   dashboard: Dashboard;
-  onEdit: () => void;
+  onEdit?: () => void;
   onUpdate: (d: Dashboard) => void;
   onReviewSource: (id: string) => void;
 }) {
@@ -531,13 +531,11 @@ export function DashboardView({
           <h1>{dashboard.name}</h1>
           <p className="subtitle">{dashboard.context.goal}</p>
         </div>
-        <button
-          className="secondary"
-          onClick={onEdit}
-          aria-label="Edit dashboard"
-        >
-          <Icon name="edit" /> Edit dashboard
-        </button>
+        {onEdit && (
+          <button className="secondary" onClick={onEdit}>
+            <Icon name="edit" /> Edit dashboard
+          </button>
+        )}
       </header>
       <BusinessSummary
         dashboard={dashboard}

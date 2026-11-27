@@ -64,7 +64,7 @@ The product must not invent KPI values, hide missing data, or present an unsuppo
 - threshold rules generate warnings;
 - templates produce plain-language explanations.
 
-The code will expose these behaviors behind simple service interfaces so a real AI provider could be added later without changing the dashboard components.
+The prototype uses pure rules and templates in the domain and feature layers. The browser runs the full calculation and explanation flow.
 
 ## Technology stack
 
@@ -117,7 +117,7 @@ src/
 ├── features/      Creation, dashboard, and workspace management screens
 ├── domain/        KPI definitions, calculations, mapping, warnings, and sample data
 ├── infrastructure/  Local file parsing, validation, and persistence
-├── styles.css     Design tokens and phone layouts
+├── styles.css     Design tokens and responsive layouts
 └── main.tsx       Browser entry point
 tests/             Playwright journeys and fictional upload fixtures
 ```
@@ -164,17 +164,17 @@ The app should use a single-column mobile shell:
 
 ### Mobile layout rules
 
-- Design first for 375px wide.
-- Support approximately 430px wide without changing the information architecture.
+- Support phone widths down to 320 CSS pixels.
 - Use a single content column.
-- Stack KPI cards vertically.
+- Use one or two KPI columns as space permits.
 - Use horizontal scrolling only for short filters or compact tab groups.
 - Keep bottom navigation fixed to the bottom of the viewport.
 - Keep primary actions reachable with one hand where practical.
 - Avoid hover-only behavior.
 - Use large touch targets, preferably at least 44px high.
 - Use a sticky header only when it improves navigation.
-- Do not build a desktop sidebar or desktop dashboard grid.
+
+At wider widths, move navigation into the header and give KPI cards, charts, and warning lists more horizontal space.
 
 ### Primary routes
 
@@ -513,29 +513,12 @@ Warning priority should be determined by rule severity and the size of the devia
 - a caveat when data quality is uncertain;
 - a possible next step written as a suggestion.
 
-## Deterministic AI adapter
+## Local rules and explanations
 
-The prototype should expose an interface that makes future AI integration possible without using a model now:
-
-```ts
-interface Advisor {
-  recommendKpis(context: UserContext): KpiDefinition[];
-  suggestMappings(
-    fields: string[],
-    kpis: KpiDefinition[]
-  ): DataMapping[];
-  explainWarning(warning: WarningFacts): string;
-}
-```
-
-The implementation should be `DeterministicAdvisor`:
-
-- KPI recommendations come from scenario configuration;
-- mappings come from aliases and data types;
-- explanations come from templates;
-- no user data leaves the browser;
-- no API key is needed;
-- no AI-generated value is used in a calculation.
+- [KPI definitions](src/domain/kpiDefinitions.ts) supply scenario recommendations and supported inputs.
+- [Mapping rules](src/domain/mappingRules.ts) rank alias matches for the user to confirm.
+- [Warning rules](src/domain/warningRules.ts) explain deviations using calculated values and source evidence.
+- The [AI summary](src/features/BusinessSummary.tsx) describes the current filtered results and links to the evidence or warning. It runs in the browser with deterministic templates and requires no API key.
 
 ## Sample scenarios
 
@@ -574,7 +557,7 @@ The sample data must be fictional and clearly labeled in the UI.
 
 ### Onboarding and context
 
-Collect industry, sector, position, goal, and scenario. Store the result in `WorkspaceContext`.
+Overview opens the practice guide, fictional samples, or saved dashboards. Setup uses the selected scenario and goal, with optional advanced context. Store the draft in `WorkspaceContext`.
 
 ### KPI selection
 
@@ -590,18 +573,17 @@ Show source fields, suggested mappings, confidence, KPI coverage, missing inputs
 
 ### Generation
 
-Use a short staged progress display. The stages can be simulated visually, but the final result must be based on real local parsing and calculations.
+Show a status while the browser calculates results from confirmed inputs. Keep the draft and offer a return to mapping if calculation is interrupted.
 
 ### Dashboard
 
 Use a vertical mobile layout:
 
-1. dashboard header;
-2. warning summary;
-3. KPI cards;
-4. trend chart;
-5. supporting table or detail list;
-6. data freshness and unresolved-data notes.
+1. Dashboard header and AI summary.
+2. Dates, comparison, and active source filters.
+3. KPI cards with evidence actions.
+4. Trend and warnings with drill-down.
+5. Source freshness and unresolved-data notes.
 
 ### Alerts
 
@@ -689,7 +671,7 @@ The production version would require authentication, authorization, encrypted st
 
 ### Prerequisites
 
-- Node.js LTS;
+- Node.js 22.12+ with Node 24 LTS recommended;
 - npm;
 - a modern browser;
 - a phone or browser device emulator for testing the target layout.

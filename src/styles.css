@@ -684,14 +684,6 @@ label {
 .sheet::backdrop {
   background: rgb(10 15 29 / 0.58);
 }
-.sheet-handle {
-  width: 36px;
-  height: 4px;
-  border-radius: 3px;
-  background: var(--line);
-  margin: 12px auto 0;
-  flex-shrink: 0;
-}
 .sheet-header {
   display: flex;
   align-items: start;
@@ -1531,9 +1523,6 @@ code {
     border: 1px solid var(--line);
     border-radius: 16px;
   }
-  .sheet-handle {
-    display: none;
-  }
 }
 @media (min-width: 1024px) {
   .app-header {
@@ -2025,10 +2014,6 @@ code {
     margin: 0;
     border: 0;
     border-radius: 0;
-  }
-
-  .guide-sheet .sheet-handle {
-    display: none;
   }
 
   .guide-sheet .sheet-header {

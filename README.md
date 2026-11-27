@@ -2,14 +2,17 @@
 
 A functional, phone-first prototype for evidence-based business dashboards. Choose a restaurant or consulting context, record an assumption, select KPIs and targets, load fictional data or local CSV/XLSX files, confirm mappings, and generate an editable dashboard with traceable results.
 
+[Live prototype](https://oliviaescp.github.io/ESCP-2627DT-A1/) · [Live Storybook](https://oliviaescp.github.io/ESCP-2627DT-A1/storybook/)
+
 ## Assignment deliverables
 
 | Deliverable | File |
 | --- | --- |
 | User research findings and interview summaries | [evidence.md](evidence.md) |
 | Product requirements covering strategy, scope, structure, and skeleton | [product.md](product.md) |
-| Design system and component stories | [design.md](design.md#storybook) |
+| Design system and component stories | [design.md](design.md) |
 | Technology stack and architecture | [architecture.md](architecture.md) |
+| Functional web prototype | [Source](src/) and the run instructions below |
 
 The team used agentic coding to implement the prototype from these briefs and to apply the submission feedback.
 
@@ -31,15 +34,13 @@ npm run preview
 
 Deploy `dist/` to a static host. Relative asset paths and hash-based navigation support repository subpaths and refreshing dashboard links without server rewrite rules. There is no service worker or offline installation; an already loaded app calculates locally, but loading/reloading requires the static app to be available.
 
-## Open on iPhone with GitHub Pages
+## GitHub Pages
 
-Open the [prototype on GitHub Pages](https://oliviaescp.github.io/ESCP-2627DT-A1/). The repository includes `.github/workflows/pages.yml` to build and deploy the app and its component catalogue on pushes to `main`, or manually from the Actions tab.
+GitHub Pages is optional for review. The [Pages workflow](.github/workflows/pages.yml) publishes the prototype and Storybook on pushes to `main`.
 
 1. A repository administrator can set the source to **GitHub Actions** under **Settings → Pages → Build and deployment** if moving the project to a new repository.
 2. Open **Actions → Deploy dAIshi to GitHub Pages → Run workflow** if the latest automatic run did not deploy.
-3. When deployment succeeds, open the site and [Storybook](https://oliviaescp.github.io/ESCP-2627DT-A1/storybook/).
-
-Use Safari's **Share → Add to Home Screen** for a shortcut. This does not provide offline loading. Saved dashboards stay in that browser on that device; they do not sync with a computer. Use fictional data only. A workflow committed to the repository does not by itself confirm that hosting is enabled or deployment has succeeded.
+3. When both jobs are green, open the live links at the top of this README.
 
 ## Run Storybook
 
@@ -59,7 +60,7 @@ Browser tests use system Chromium at `/usr/bin/chromium` when available. On anot
 
 ## Walkthrough
 
-The welcome page offers **Restaurant sample** and **Consulting sample** for a ready-to-review fictional dashboard. **Create your first dashboard** starts the guided setup. A short dAIshi intro plays when the app loads. Choose **Skip intro** to go straight to your workspace. The intro is static when reduced motion is enabled. On Overview, open **Quick guide** to practice choosing KPIs, checking a source column, filtering a result, and opening its evidence in a fictional dashboard. You can pause on Overview or open the finished practice dashboard as a saved copy.
+On Overview, choose **Start guide** or **Quick guide** for the seven-step walkthrough. Practice choosing KPIs, matching a source column, filtering a result, and opening its evidence. Pause on Overview or open the finished practice dashboard as a saved copy. **Restaurant sample** and **Consulting sample** open ready-to-review fictional dashboards. Choose **Create your first dashboard** to review the full setup flow below. **Skip intro** takes you directly to Overview during launch.
 
 1. Choose **Create your first dashboard** to set up your own view. Pick a scenario and add a decision or goal. **Advanced context** holds the role, industry, and original assumption.
 2. Select the KPIs you want to track. Open **Targets and alerts** for a KPI to edit its target and thresholds or change its position.
@@ -95,14 +96,14 @@ The welcome page offers **Restaurant sample** and **Consulting sample** for a re
 
 ## Visual and product decisions
 
-The earlier design references in `assets/design/` informed the evidence-first layout. The current design system uses a cobalt accent, cool surfaces, and responsive KPI cards. Its tokens live in `src/styles.css`.
+The [design system](design.md) documents the evidence-first layout, cobalt accent, and responsive KPI cards. Its implemented tokens live in [src/styles.css](src/styles.css).
 
 The user resolved these material conflicts:
 
 - Use a two-column KPI grid on phones, one column on the narrowest screens, and up to four columns at larger widths.
 - Use amber Watch, red Needs attention, and green On track, rather than blue medium warnings in the earlier interviews.
 - Use fixed formulas, metadata-only custom KPIs, and editable relative shortfall thresholds.
-- Follow the local-first architecture/prototype boundary instead of earlier requirements for live file links, accounts, legacy XLS, or desktop navigation.
+- Use browser-local storage, fictional fixtures, and local CSV/XLSX processing.
 
 ## Prototype boundaries
 

@@ -279,11 +279,11 @@ export function Creation() {
       }}
       footer={
         <div className="actions">
-          {index > 0 && (
+          {index > 0 && !(index === 4 && error) && (
             <button
               className="secondary"
               disabled={busy}
-              onClick={() => go(index === 4 ? 3 : index - 1)}
+              onClick={() => go(index - 1)}
             >
               Back
             </button>
@@ -778,50 +778,57 @@ export function Creation() {
                           : ""}
                         {m.status}
                       </small>
-                      <div className="actions">
-                        <button
-                          className="secondary"
-                          disabled={!m.sourceField || m.status === "confirmed"}
-                          onClick={() =>
-                            update({
-                              mappings: draft.mappings.map((x) =>
-                                x.id === m.id
-                                  ? { ...x, status: "confirmed" }
-                                  : x,
-                              ),
-                            })
-                          }
-                        >
-                          {m.status === "confirmed"
-                            ? "Confirmed"
-                            : "Confirm mapping"}
-                        </button>
-                        <button
-                          className="text-button"
-                          onClick={() =>
-                            update({
-                              mappings: draft.mappings.map((x) =>
-                                x.id === m.id
-                                  ? { ...x, status: "unresolved" }
-                                  : x,
-                              ),
-                            })
-                          }
-                        >
-                          Leave unresolved
-                        </button>
-                      </div>
+                      {m.sourceField && (
+                        <div className="actions">
+                          {m.status !== "confirmed" && (
+                            <button
+                              className="secondary"
+                              onClick={() =>
+                                update({
+                                  mappings: draft.mappings.map((x) =>
+                                    x.id === m.id
+                                      ? { ...x, status: "confirmed" }
+                                      : x,
+                                  ),
+                                })
+                              }
+                            >
+                              Confirm mapping
+                            </button>
+                          )}
+                          {m.status !== "unresolved" && (
+                            <button
+                              className="text-button"
+                              onClick={() =>
+                                update({
+                                  mappings: draft.mappings.map((x) =>
+                                    x.id === m.id
+                                      ? { ...x, status: "unresolved" }
+                                      : x,
+                                  ),
+                                })
+                              }
+                            >
+                              Leave unresolved
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))
               )}
             </section>
           ))}
-          <button
-            className="secondary"
-            onClick={() => update({ mappings: confirmFields(draft.mappings) })}
-          >
-            Confirm all selected fields
-          </button>
+          {suggested.length > 0 && (
+            <button
+              className="secondary"
+              onClick={() =>
+                update({ mappings: confirmFields(draft.mappings) })
+              }
+            >
+              Confirm all selected fields
+            </button>
+          )}
           <p className="notice">
             By confirming, you approve the selected fields above. Unmapped
             inputs remain unavailable. Review dates and missing values before
@@ -829,7 +836,7 @@ export function Creation() {
           </p>
         </div>
       )}
-      {index === 4 && (
+      {index === 4 && !error && (
         <div className="stack generation" role="status">
           <Icon name="trend" size={32} />
           <p>

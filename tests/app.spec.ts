@@ -92,17 +92,19 @@ test("restaurant sample: evidence, warnings, manual mapping, refresh, edit, reop
   await page
     .getByRole("button", { name: "Confirm all selected fields" })
     .click();
-  const confirmed = await page
-    .getByRole("button", { name: "Confirmed", exact: true })
-    .count();
+  const confirmedMappings = page
+    .locator(".mapping-row small")
+    .filter({ hasText: /\bconfirmed$/ });
+  const confirmed = await confirmedMappings.count();
   expect(confirmed).toBeGreaterThan(0);
-  await page.getByRole("button", { name: "Back", exact: true }).click();
-  await page.getByRole("button", { name: "Back", exact: true }).click();
-  await page.getByRole("button", { name: "Continue", exact: true }).click();
-  await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(
-    page.getByRole("button", { name: "Confirmed", exact: true }),
-  ).toHaveCount(confirmed);
+    page.getByRole("button", { name: "Confirm all selected fields" }),
+  ).toHaveCount(0);
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await page.getByRole("button", { name: "Back", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await expect(confirmedMappings).toHaveCount(confirmed);
   await page
     .getByRole("button", { name: "Generate dashboard", exact: true })
     .click();
@@ -151,9 +153,7 @@ test("restaurant sample: evidence, warnings, manual mapping, refresh, edit, reop
     .fill("Anna’s Kitchen");
   for (let i = 0; i < 3; i++)
     await page.getByRole("button", { name: "Continue", exact: true }).click();
-  await page
-    .getByRole("button", { name: "Confirm all selected fields" })
-    .click();
+  await expect(confirmedMappings).toHaveCount(confirmed);
   await page
     .getByRole("button", { name: "Generate dashboard", exact: true })
     .click();

@@ -98,7 +98,6 @@ export function Sheet({
           close.current();
       }}
     >
-      <div className="sheet-handle" aria-hidden="true" />
       <header className="sheet-header">
         <div>
           {eyebrow && <p className="eyebrow">{eyebrow}</p>}

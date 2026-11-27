@@ -102,7 +102,8 @@ require real company data for the prototype.
 
 ### MVP user journey
 
-Onboard: Select an industry or example context, business area, position, and goal.
+Explore the optional practice guide or open a fictional sample dashboard from Overview.
+Onboard: Select a scenario and goal. Add business area, position, or an original assumption in advanced context.
 Define: Choose recommended KPIs, add custom KPIs where needed, and set targets or warning thresholds.
 Upload: Add one or more Excel or CSV files.
 Validate: Review detected fields, supported KPIs, missing data, conflicts, and suggested mappings.
@@ -115,12 +116,10 @@ Manage: Review saved dashboards, data sources, alert rules, and privacy settings
 
 1. Onboarding and context selection
 The product must collect enough context to personalize recommendations:
-industry or example industry;
-sector or business area;
-user position;
+restaurant or consulting scenario;
 business goal or decision to monitor;
-optional company or project name.
-The onboarding screen must explain the three-step core process: define KPIs, upload information, and generate the dashboard. The user must be able to use fictional sample data from onboarding.
+optional company or project name, industry, sector, position, and original assumption.
+Overview offers ready-to-open fictional dashboards and a seven-step practice guide. The guide lets the user choose KPIs, confirm a sample source column, change the reporting view, and verify a result against its evidence. Saving a practice dashboard is optional.
 2. KPI and assumption definition
 The user can:
 select from recommended KPIs based on the chosen context;
@@ -151,16 +150,11 @@ duplicate, outdated, or conflicting files when detectable;
 the data period used for each calculation.
 The user must be able to accept, change, or leave unresolved each suggested mapping. A KPI that cannot be calculated must be clearly marked and must not silently appear as a fabricated result.
 5. Dashboard generation
-After the user confirms the data mapping, the product must show progress through these stages:
-reading uploaded information;
-matching fields to KPIs;
-calculating results;
-checking data quality;
-assembling the dashboard.
-The generation screen must provide a useful error state if analysis fails and must allow the user to return to mapping or retry. The generated dashboard should include the selected KPIs and only show calculated values that have sufficient supporting data.
+After users confirm their mappings, show a calculation status while the browser builds the dashboard from the selected fields and periods. If calculation fails, keep the draft and give users a way back to mapping. The dashboard includes the selected KPIs and identifies those with insufficient data.
 6. Dashboard and review experience
 The generated dashboard must include:
 dashboard name and business context;
+an AI summary computed in the browser from the current view, with links to the relevant evidence;
 date range and comparison-period controls;
 KPI cards with current value, target, variance, status, and trend;
 charts or tables appropriate to the selected KPI;
@@ -198,8 +192,7 @@ what data is uploaded and why it is used;
 whether sample or user-provided data is active;
 the data source and last updated time;
 deletion controls for dashboards and files;
-a clear notice that confidential data should not be used in the student prototype;
-a privacy-policy placeholder before real customer data is introduced.
+a clear notice to use fictional data in the student prototype.
 Production requirements for authorization, retention, GDPR processes, and external AI data handling remain future work but should not be contradicted by the prototype experience.
 Content requirements
 KPI card content
@@ -226,7 +219,7 @@ invalid dates or numbers;
 a KPI that cannot be calculated;
 conflicting or outdated sources;
 a very large upload;
-failed AI analysis;
+interrupted local calculation;
 no internet connection;
 no available dashboard data;
 an interrupted generation process.
@@ -249,9 +242,9 @@ Dashboard: layout, selected KPIs, filters, date range, name, and update history.
 
 ```text
 dAIshi
-├── Home / Saved dashboards
-│   ├── Dashboard overview
-│   └── Dashboard detail
+├── Overview
+│   ├── Practice guide and fictional sample dashboards
+│   └── Saved dashboards
 ├── Create dashboard
 │   ├── 1. Context and goal
 │   ├── 2. KPIs and assumptions
@@ -314,14 +307,15 @@ This pattern is essential for trust and should be consistent across financial, o
 
 | Screen | Purpose | Key elements | Primary actions |
 | --- | --- | --- | --- |
-| Welcome / onboarding | Explain value and setup | Product purpose, three-step explanation, sample-data option | Start, use sample data |
-| Context and goal | Personalize the dashboard | Industry, sector, position, goal, company/project | Continue, back |
+| Welcome and Overview | Explain the prototype and offer quick entry points | Launch, product purpose, practice guide, fictional samples, saved dashboards | Start guide, open sample, create dashboard |
+| Practice guide | Teach the workflow using fictional data | Seven exercises, changing KPI preview, evidence, and feedback | Back, continue, pause, open practice dashboard |
+| Context and goal | Personalize the dashboard | Scenario and goal, with optional company/project and advanced context | Continue, back |
 | KPI selection | Choose monitoring scope | Recommended KPI groups, search, selected KPI list | Select, continue |
 | Custom KPI creation | Add a user-specific measure | Name, definition, unit, target, threshold, period | Save KPI, cancel |
-| Data upload | Collect source information | Dropzone, file list, formats, sample files, privacy notice | Upload, remove, continue |
+| Data upload | Collect source information | File picker, file list, formats, sample files, privacy notice | Upload, remove, continue |
 | Mapping and validation | Confirm data readiness | Detected fields, KPI coverage, mapping controls, warnings, missing fields | Confirm mapping, fix, back |
-| Generation progress | Set expectations during analysis | Progress stages, status messages, cancel/retry behavior | Wait, retry, return to mapping |
-| Generated dashboard | Monitor decisions and KPIs | KPI cards, charts, filters, status, warnings, freshness, source links | Inspect, edit, save |
+| Dashboard calculation | Set expectations during local calculation | Status and recovery message | Return to mapping if interrupted |
+| Generated dashboard | Monitor decisions and KPIs | AI summary, KPI cards, charts, filters, status, warnings, freshness, source links | Inspect, edit, save |
 | KPI or warning detail | Explain a result | Current value, target, trend, calculation, source, impact, caveats | Back, edit source or threshold |
 | Dashboard editing | Customize the working view | Layout controls, card selection, chart type, filters, thresholds | Save, cancel |
 | Saved dashboards | Return to existing work | Dashboard list, warning count, context, last updated | Open, rename, delete, create |
@@ -341,7 +335,7 @@ Consistent status colors with text labels; color must not be the only indicator.
 Visible loading, error, and unsaved-change states.
 Dashboard layout
 Header: dashboard name, context, last updated time, date range, comparison period, edit action.
-First content row: the highest-priority KPI cards or changed assumptions.
+First content row: the locally calculated AI summary and its evidence links.
 Main content: charts and tables chosen for the KPI type.
 Warning area: prioritized alerts with concise explanations and source links.
 Detail access: every card and warning is clickable or has an explicit details action.
@@ -381,7 +375,7 @@ As a prototype user, I want clear sample-data labeling so that I do not confuse 
 
 | ID | Requirement | Priority |
 | --- | --- | --- |
-| FR-01 | The system shall collect industry, sector, position, and monitoring goal during onboarding. | Must |
+| FR-01 | The system shall collect a scenario and monitoring goal during onboarding, with optional industry, sector, and position. | Must |
 | FR-02 | The system shall recommend KPIs based on the selected context. | Must |
 | FR-03 | The system shall let users select, remove, and reorder KPIs before generation. | Must |
 | FR-04 | The system shall let users create a custom KPI with a definition, unit, target, threshold, and period. | Should |
@@ -392,7 +386,7 @@ As a prototype user, I want clear sample-data labeling so that I do not confuse 
 | FR-09 | The system shall suggest mappings between source fields and KPI inputs. | Must |
 | FR-10 | The system shall let users accept, edit, or leave mappings unresolved. | Must |
 | FR-11 | The system shall prevent unsupported or uncalculated KPIs from appearing as valid results. | Must |
-| FR-12 | The system shall show generation progress and recoverable failure states. | Must |
+| FR-12 | The system shall show a local calculation status and preserve the draft on failure. | Must |
 | FR-13 | The system shall generate KPI cards, charts or tables, trends, filters, and status indicators. | Must |
 | FR-14 | The system shall show source, period, target, comparison, and calculation context for each KPI. | Must |
 | FR-15 | The system shall generate prioritized in-dashboard warnings for meaningful deviations. | Must |

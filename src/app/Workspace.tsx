@@ -12,8 +12,8 @@ import {
   loadWorkspace,
   saveWorkspace,
   clearWorkspace,
-} from "../infrastructure/persistence/localStorageRepository";
-import { workspaceSchema } from "../infrastructure/persistence/schema";
+} from "../infrastructure/persistence";
+import { workspaceSchema } from "../infrastructure/schema";
 export type Workspace = {
   draft: Draft | null;
   draftStep: number;
@@ -35,7 +35,7 @@ const empty: Workspace = {
   guideSeen: false,
 };
 type Action = { type: "patch"; patch: Partial<Workspace> } | { type: "reset" };
-export function workspaceReducer(state: Workspace, action: Action): Workspace {
+function workspaceReducer(state: Workspace, action: Action): Workspace {
   return action.type === "reset" ? { ...empty } : { ...state, ...action.patch };
 }
 const Context = createContext<null | {
