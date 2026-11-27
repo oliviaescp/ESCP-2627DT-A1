@@ -9,10 +9,19 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useWorkspace } from "./Workspace";
-import { allSources, buildDashboard, newDraft, removeSource } from "./workflow";
-import type { Dashboard, Draft } from "../domain/models";
+import {
+  allSources,
+  buildDashboard,
+  confirmFields,
+  newDraft,
+  removeSource,
+  withSampleData,
+} from "./workflow";
+import type { Dashboard, Draft, Scenario } from "../domain/models";
 import { parseFile, createDataSource } from "../infrastructure/parsers";
 import { Creation } from "../features/Creation";
+import { Overview } from "../features/Overview";
+import { QuickGuide } from "../features/QuickGuide";
 import { DashboardView } from "../features/DashboardView";
 import {
   AlertsView,
@@ -64,13 +73,30 @@ export default function App() {
       `/onboarding/${["context", "kpis", "upload", "mapping", "generating"][state.draft ? Math.min(state.draftStep, 3) : 0]}`,
     );
   };
+  const saveAndOpen = (dashboard: Dashboard) => {
+    patch({
+      dashboards: [...state.dashboards, dashboard],
+      activeDashboardId: dashboard.id,
+    });
+    navigate(`/dashboards/${dashboard.id}`);
+  };
+  const openSample = (scenario: Scenario) => {
+    const sample = withSampleData(newDraft(scenario));
+    saveAndOpen(
+      buildDashboard(
+        { ...sample, mappings: confirmFields(sample.mappings) },
+        undefined,
+        undefined,
+        state.freshnessDays,
+      ),
+    );
+  };
   const update = (d: Dashboard) => {
     try {
       const built = buildDashboard(d, d.name, d, state.freshnessDays);
       patch({
         dashboards: state.dashboards.map((x) => (x.id === d.id ? built : x)),
       });
-      setNotice("Dashboard updated. Browser saving status appears below.");
     } catch {
       setNotice(
         "Could not update this view. Check periods and mappings. Your saved dashboard is unchanged.",
@@ -122,16 +148,51 @@ export default function App() {
   const count = state.dashboards.reduce((n, d) => n + d.warnings.length, 0);
   return (
     <div className="app-shell">
-      <a className="skip-link" href="#main">
+      <a
+        className="skip-link"
+        href="#main"
+        onClick={(event) => {
+          event.preventDefault();
+          document.getElementById("main")?.focus();
+        }}
+      >
         Skip to content
       </a>
       <header className="app-header">
         <button className="brand" onClick={() => navigate("/")}>
           <span className="brand-mark" aria-hidden="true">
-            d
+            <Icon name="trend" size={21} />
           </span>
           <span>dAIshi</span>
         </button>
+        <nav className="bottom-nav" aria-label="Primary navigation">
+          {[
+            ["/", "grid", "Overview"],
+            ["/sources", "database", "Sources"],
+            ["/alerts", "bell", "Alerts"],
+            ["/settings", "settings", "Settings"],
+          ].map(([path, icon, label]) => (
+            <NavLink
+              key={path}
+              to={path}
+              end={path === "/"}
+              className={({ isActive }) =>
+                isActive ||
+                (path === "/" && location.pathname.startsWith("/dashboards/"))
+                  ? "active"
+                  : ""
+              }
+            >
+              <span className="nav-icon">
+                <Icon name={icon as "grid"} />
+                {path === "/alerts" && count > 0 && (
+                  <span className="nav-count">{count}</span>
+                )}
+              </span>
+              <span>{label}</span>
+            </NavLink>
+          ))}
+        </nav>
         <div className="header-actions">
           <button
             className="icon-button"
@@ -158,7 +219,8 @@ export default function App() {
             aria-label="Create dashboard"
             onClick={create}
           >
-            <Icon name="plus" size={25} />
+            <Icon name="plus" size={20} />
+            <span className="header-create-label">Create dashboard</span>
           </button>
         </div>
       </header>
@@ -193,78 +255,18 @@ export default function App() {
             path="/"
             element={
               <>
-                <div className="page-heading">
-                  <p className="eyebrow">Your business, at a glance</p>
-                  <h1>Your dashboards</h1>
-                  <p className="subtitle">A clear view of your next chapter.</p>
-                </div>
-                {!state.dashboards.length ? (
-                  <section className="panel stack empty-state">
-                    <span className="choice-mark">d</span>
-                    <h2>Start with what matters.</h2>
-                    <p>
-                      Turn your goals and a few business files into a view you
-                      can verify. No account. No external AI.
-                    </p>
-                    <button className="primary" onClick={create}>
-                      {state.draft
-                        ? "Resume dashboard setup"
-                        : "Create your first dashboard"}
-                      <Icon name="arrow" />
-                    </button>
-                    <p className="notice">
-                      Fictional data only. Your workspace stays in this browser,
-                      on this device.
-                    </p>
-                  </section>
-                ) : (
-                  <div className="stack">
-                    {state.draft && (
-                      <button className="secondary" onClick={create}>
-                        Resume saved setup
-                      </button>
-                    )}
-                    {state.dashboards.map((d) => (
-                      <section className="panel stack" key={d.id}>
-                        <p className="eyebrow">
-                          {d.context.scenario} ·{" "}
-                          {d.sources.every((s) => s.isSample)
-                            ? "Fictional sample"
-                            : "Local workspace"}
-                        </p>
-                        <h2 className="serif">{d.name}</h2>
-                        <p>{d.context.goal}</p>
-                        <small>
-                          {d.dateRange.start} — {d.dateRange.end}
-                          <br />
-                          {d.warnings.length} warnings · Updated{" "}
-                          {new Date(d.updatedAt).toLocaleString()}
-                        </small>
-                        <div className="actions">
-                          <button
-                            className="primary"
-                            onClick={() => {
-                              patch({ activeDashboardId: d.id });
-                              navigate(`/dashboards/${d.id}`);
-                            }}
-                          >
-                            Open dashboard
-                          </button>
-                          <button
-                            className="danger"
-                            aria-label={`Delete ${d.name}`}
-                            onClick={() => setDeleteId(d.id)}
-                          >
-                            <Icon name="trash" />
-                          </button>
-                        </div>
-                      </section>
-                    ))}
-                    <button className="secondary" onClick={create}>
-                      Create another dashboard
-                    </button>
-                  </div>
-                )}
+                <QuickGuide onOpenPractice={saveAndOpen} />
+                <Overview
+                  dashboards={state.dashboards}
+                  hasDraft={!!state.draft}
+                  onCreate={create}
+                  onSample={openSample}
+                  onOpen={(id) => {
+                    patch({ activeDashboardId: id });
+                    navigate(`/dashboards/${id}`);
+                  }}
+                  onDelete={setDeleteId}
+                />
               </>
             }
           />
@@ -348,34 +350,6 @@ export default function App() {
           · You remain in control.
         </p>
       </main>
-      <nav className="bottom-nav" aria-label="Primary navigation">
-        {[
-          ["/", "grid", "Overview"],
-          ["/sources", "database", "Sources"],
-          ["/alerts", "bell", "Alerts"],
-          ["/settings", "settings", "Settings"],
-        ].map(([path, icon, label]) => (
-          <NavLink
-            key={path}
-            to={path}
-            end={path === "/"}
-            className={({ isActive }) =>
-              isActive ||
-              (path === "/" && location.pathname.startsWith("/dashboards/"))
-                ? "active"
-                : ""
-            }
-          >
-            <span className="nav-icon">
-              <Icon name={icon as "grid"} />
-              {path === "/alerts" && count > 0 && (
-                <span className="nav-count">{count}</span>
-              )}
-            </span>
-            <span>{label}</span>
-          </NavLink>
-        ))}
-      </nav>
       {source && (
         <SourceDetails source={source} onClose={() => setSourceId(null)} />
       )}
@@ -424,6 +398,7 @@ function DashboardRoute({
   const d = state.dashboards.find((x) => x.id === dashboardId);
   return d ? (
     <DashboardView
+      key={d.id}
       dashboard={d}
       onEdit={() => onEdit(d)}
       onUpdate={onUpdate}

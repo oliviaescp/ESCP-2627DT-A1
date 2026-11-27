@@ -13,9 +13,11 @@ export type IconName =
   | "file"
   | "close"
   | "edit"
+  | "filter"
   | "chevron"
   | "moon"
   | "sun"
+  | "sparkle"
   | "trash";
 
 export function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
@@ -86,6 +88,10 @@ export function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
         <path d="M12 20h9" />
         <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
       </>
+    ),
+    filter: <path d="M4 6h16M7 12h10m-7 6h4" />,
+    sparkle: (
+      <path d="M11 3l2.4 6.6L20 12l-6.6 2.4L11 21l-2.4-6.6L2 12l6.6-2.4L11 3Zm8 1v4m-2-2h4" />
     ),
     chevron: <path d="m9 18 6-6-6-6" />,
     moon: (

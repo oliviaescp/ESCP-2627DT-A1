@@ -2,6 +2,11 @@ import type { DataSource, Dashboard, Draft, Scenario } from "../domain/models";
 import { recommendKpis } from "../domain/kpiDefinitions";
 import { calculateAll } from "../domain/calculations";
 import { generateWarnings } from "../domain/warningRules";
+import { suggestMappings } from "../domain/mappingRules";
+import {
+  createSampleSources,
+  getDefaultRanges,
+} from "../domain/sampleScenarios";
 export const uid = () => crypto.randomUUID();
 export function newDraft(scenario: Scenario = "restaurant"): Draft {
   return {
@@ -41,6 +46,26 @@ export function newDraft(scenario: Scenario = "restaurant"): Draft {
     comparisonPeriod: { start: "2026-05-01", end: "2026-05-31" },
     filters: {},
   };
+}
+export function withSampleData(draft: Draft): Draft {
+  const sources = createSampleSources(draft.context.scenario);
+  return {
+    ...draft,
+    sources,
+    mappings: suggestMappings(sources, draft.definitions),
+    ...getDefaultRanges(sources),
+    filters: {},
+  };
+}
+
+export function confirmFields(mappings: Draft["mappings"]): Draft["mappings"] {
+  return mappings.map((mapping) => ({
+    ...mapping,
+    status:
+      mapping.sourceId && mapping.sourceField && mapping.status !== "unresolved"
+        ? "confirmed"
+        : "unresolved",
+  }));
 }
 export function buildDashboard(
   draft: Draft,

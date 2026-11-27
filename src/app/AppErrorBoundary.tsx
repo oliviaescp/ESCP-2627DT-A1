@@ -9,10 +9,12 @@ export class AppErrorBoundary extends Component<
   }
   render() {
     return this.state.failed ? (
-      <main className="content">
-        <h1>Something interrupted the workspace.</h1>
+      <main className="content recovery-page">
+        <p className="eyebrow">dAIshi workspace</p>
+        <h1>Reload your workspace</h1>
         <p>
-          Your saved browser data has not been deleted. Reload to try again.
+          Something interrupted the app. Your saved dashboards are still in this
+          browser.
         </p>
         <button className="primary" onClick={() => location.reload()}>
           Reload app

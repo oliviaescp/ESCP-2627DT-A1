@@ -18,10 +18,12 @@ import type {
   SourceReference,
   Warning,
 } from "../domain/models";
-import { calculateKpi } from "../domain/calculations";
+import { calculateKpi, formatMetric } from "../domain/calculations";
 import { Sheet } from "../components/Sheet";
 import { Icon } from "../components/Icon";
 import { Badge } from "../components/Badge";
+import { BusinessSummary } from "./BusinessSummary";
+import { DashboardFilters } from "./DashboardFilters";
 
 const statusNames: Record<string, string> = {
   "on-track": "On track",
@@ -29,24 +31,6 @@ const statusNames: Record<string, string> = {
   critical: "Needs attention",
   unavailable: "Needs review",
 };
-export function formatMetric(
-  value: number | undefined,
-  unit: KpiResult["unit"],
-  compact = false,
-) {
-  if (value === undefined || !Number.isFinite(value)) return "Unavailable";
-  if (unit === "currency")
-    return new Intl.NumberFormat("en-IE", {
-      style: "currency",
-      currency: "EUR",
-      maximumFractionDigits: compact ? 1 : 2,
-      notation: compact ? "compact" : "standard",
-    }).format(value);
-  return (
-    new Intl.NumberFormat("en-GB", { maximumFractionDigits: 1 }).format(value) +
-    (unit === "percentage" ? "%" : unit === "hours" ? " h" : "")
-  );
-}
 function rangeLabel(range: DateRange) {
   return `${range.start} – ${range.end}`;
 }
@@ -272,89 +256,6 @@ function KpiEvidence({
     </Sheet>
   );
 }
-function DateControls({
-  dashboard,
-  onUpdate,
-}: {
-  dashboard: Dashboard;
-  onUpdate: (d: Dashboard) => void;
-}) {
-  const [range, setRange] = useState(dashboard.dateRange),
-    [comparison, setComparison] = useState(dashboard.comparisonPeriod),
-    [error, setError] = useState("");
-  function apply() {
-    if (
-      !range.start ||
-      !range.end ||
-      !comparison.start ||
-      !comparison.end ||
-      range.start > range.end ||
-      comparison.start > comparison.end
-    ) {
-      setError(
-        "Choose valid start and end dates for both periods. Existing saved results are unchanged.",
-      );
-      return;
-    }
-    setError("");
-    onUpdate({ ...dashboard, dateRange: range, comparisonPeriod: comparison });
-  }
-  return (
-    <details>
-      <summary>Change reporting and comparison periods</summary>
-      <div className="stack">
-        <p>
-          Targets apply to the full reporting period. Adjust them when changing
-          its length.
-        </p>
-        <label className="field">
-          Reporting start
-          <input
-            type="date"
-            value={range.start}
-            onChange={(e) => setRange({ ...range, start: e.target.value })}
-          />
-        </label>
-        <label className="field">
-          Reporting end
-          <input
-            type="date"
-            value={range.end}
-            onChange={(e) => setRange({ ...range, end: e.target.value })}
-          />
-        </label>
-        <label className="field">
-          Comparison start
-          <input
-            type="date"
-            value={comparison.start}
-            onChange={(e) =>
-              setComparison({ ...comparison, start: e.target.value })
-            }
-          />
-        </label>
-        <label className="field">
-          Comparison end
-          <input
-            type="date"
-            value={comparison.end}
-            onChange={(e) =>
-              setComparison({ ...comparison, end: e.target.value })
-            }
-          />
-        </label>
-        {error && (
-          <p role="alert" className="error">
-            {error}
-          </p>
-        )}
-        <button className="secondary" onClick={apply}>
-          Apply periods
-        </button>
-      </div>
-    </details>
-  );
-}
 function TrendChart({
   dashboard,
   onUpdate,
@@ -466,41 +367,43 @@ function TrendChart({
     </>
   );
   return (
-    <section className="panel stack">
+    <section className="panel stack trend-panel">
       <div>
         <h2>{hasCost ? "Revenue & cost trend" : `${selected.name} trend`}</h2>
         <p>Monthly values · {rangeLabel(range)}</p>
       </div>
-      <label className="field">
-        Trend metric
-        <select
-          value={selected.id}
-          onChange={(e) => setMetricId(e.target.value)}
-        >
-          {dashboard.definitions
-            .filter((d) => !d.custom)
-            .map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name}
-              </option>
-            ))}
-        </select>
-      </label>
-      <label className="field">
-        Chart style
-        <select
-          value={dashboard.chartType}
-          onChange={(e) =>
-            onUpdate({
-              ...dashboard,
-              chartType: e.target.value as Dashboard["chartType"],
-            })
-          }
-        >
-          <option value="line">Line chart</option>
-          <option value="bar">Bar chart</option>
-        </select>
-      </label>
+      <div className="trend-controls">
+        <label className="field">
+          Trend metric
+          <select
+            value={selected.id}
+            onChange={(e) => setMetricId(e.target.value)}
+          >
+            {dashboard.definitions
+              .filter((d) => !d.custom)
+              .map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+          </select>
+        </label>
+        <label className="field">
+          Chart style
+          <select
+            value={dashboard.chartType}
+            onChange={(e) =>
+              onUpdate({
+                ...dashboard,
+                chartType: e.target.value as Dashboard["chartType"],
+              })
+            }
+          >
+            <option value="line">Line chart</option>
+            <option value="bar">Bar chart</option>
+          </select>
+        </label>
+      </div>
       <p className="legend">
         {selected.name}
         {hasCost &&
@@ -523,7 +426,7 @@ function TrendChart({
                   isAnimationActive={false}
                   dataKey="value"
                   name={selected.name}
-                  fill="var(--ink)"
+                  fill="var(--accent)"
                 />
                 {hasCost && (
                   <Bar
@@ -542,7 +445,7 @@ function TrendChart({
                   type="monotone"
                   dataKey="value"
                   name={selected.name}
-                  stroke="var(--ink)"
+                  stroke="var(--accent)"
                   strokeWidth={2}
                   dot={false}
                   connectNulls={false}
@@ -607,24 +510,6 @@ export function DashboardView({
 }) {
   const [detail, setDetail] = useState<KpiResult | null>(null),
     [warning, setWarning] = useState<Warning | null>(null);
-  const filters = useMemo(() => {
-    const names = [
-      ...new Set(dashboard.sources.flatMap((s) => s.fieldNames)),
-    ].filter((f) => /^(client|project|location|product)([ _]name)?$/i.test(f));
-    return names.map((field) => ({
-      field,
-      values: [
-        ...new Set(
-          dashboard.sources.flatMap((s) =>
-            s.rows
-              .map((r) => r[field])
-              .filter((v) => v !== undefined && v !== null && v !== "")
-              .map(String),
-          ),
-        ),
-      ].sort(),
-    }));
-  }, [dashboard.sources]);
   const sampleLabel =
     dashboard.sources.length === 0
       ? "No sources"
@@ -635,72 +520,56 @@ export function DashboardView({
           : "Local uploads";
   return (
     <div className="stack dashboard-view">
-      <header className="page-heading">
-        <p className="eyebrow">Your business, at a glance</p>
-        <div className="actions">
+      <header className="dashboard-heading">
+        <div>
+          <p className="eyebrow">
+            {dashboard.context.scenario === "restaurant"
+              ? "Restaurant"
+              : "Consulting"}{" "}
+            dashboard
+          </p>
           <h1>{dashboard.name}</h1>
-          <button
-            className="icon-button"
-            onClick={onEdit}
-            aria-label="Edit dashboard"
-          >
-            <Icon name="edit" />
-          </button>
+          <p className="subtitle">{dashboard.context.goal}</p>
         </div>
-        <p className="subtitle">{dashboard.context.goal}</p>
+        <button
+          className="secondary"
+          onClick={onEdit}
+          aria-label="Edit dashboard"
+        >
+          <Icon name="edit" /> Edit dashboard
+        </button>
       </header>
-      <section className="panel context-card stack">
-        <div className="actions">
-          <div>
-            <p className="eyebrow">Reporting period</p>
-            <strong>{rangeLabel(dashboard.dateRange)}</strong>
-          </div>
-          <Badge status="sample">{sampleLabel}</Badge>
+      <BusinessSummary
+        dashboard={dashboard}
+        onReviewKpi={setDetail}
+        onReviewWarning={setWarning}
+      />
+      <DashboardFilters
+        dashboard={dashboard}
+        onUpdate={onUpdate}
+        sourceLabel={sampleLabel}
+      />
+      <section aria-labelledby="performance-heading">
+        <div className="section-heading">
+          <h2 id="performance-heading">Key performance</h2>
+          <small>
+            Updated {new Date(dashboard.updatedAt).toLocaleString()}
+          </small>
         </div>
-        <p>Compared with {rangeLabel(dashboard.comparisonPeriod)}</p>
-        <p>Updated {new Date(dashboard.updatedAt).toLocaleString()}</p>
-        <DateControls
-          key={`${dashboard.id}-${dashboard.dateRange.start}-${dashboard.dateRange.end}`}
-          dashboard={dashboard}
-          onUpdate={onUpdate}
-        />
-        {filters.map(({ field, values }) => (
-          <label className="field" key={field}>
-            Filter {field}
-            <select
-              value={dashboard.filters[field] ?? ""}
-              onChange={(e) =>
-                onUpdate({
-                  ...dashboard,
-                  filters: { ...dashboard.filters, [field]: e.target.value },
-                })
-              }
-            >
-              <option value="">All {field}</option>
-              {values.map((v) => (
-                <option value={v} key={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-          </label>
-        ))}
-      </section>
-      <section>
-        <h2>Key performance</h2>
-        <p>Indicators tied to your decision</p>
+        {dashboard.kpiResults.length > 0 &&
+          dashboard.kpiResults.every(
+            (result) => result.value === undefined,
+          ) && (
+            <p className="notice">
+              No KPI values are available for this view. Check the reporting
+              dates, filters, or source mappings. Open a KPI’s evidence to see
+              the specific reason.
+            </p>
+          )}
         <div className="kpi-grid">
           {dashboard.kpiResults.map((k) => (
             <article className="kpi-card" key={k.id}>
-              <div
-                className="card-top"
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  gap: 8,
-                }}
-              >
+              <div className="card-top">
                 <h3>{k.name}</h3>
                 <Badge status={k.status}>{statusNames[k.status]}</Badge>
               </div>
@@ -732,6 +601,48 @@ export function DashboardView({
           </p>
         )}
       </section>
+      <div className="dashboard-columns">
+        <TrendChart dashboard={dashboard} onUpdate={onUpdate} />
+        <section className="panel attention-panel">
+          <div className="section-heading">
+            <h2>Needs your attention</h2>
+            <small>
+              {dashboard.warnings.length}{" "}
+              {dashboard.warnings.length === 1 ? "warning" : "warnings"}
+            </small>
+          </div>
+          {dashboard.warnings.map((w) => (
+            <button
+              key={w.id}
+              className="warning-row"
+              onClick={() => setWarning(w)}
+            >
+              <span
+                className={`warning-icon ${w.priority === "high" ? "high" : "medium"}`}
+              >
+                <Icon name="warning" />
+              </span>
+              <span className="warning-copy">
+                <strong>{w.title}</strong>
+                <small>
+                  {w.priority} priority · {w.changedValues[0] ?? w.ruleKey}
+                </small>
+              </span>
+              <Icon name="chevron" />
+            </button>
+          ))}
+          {!dashboard.warnings.length && (
+            <p>No rule-based warnings in this reporting period.</p>
+          )}
+          <div className="human-note">
+            <strong>You remain in control.</strong>
+            <p>
+              dAIshi highlights evidence and possible issues. You decide what to
+              do next.
+            </p>
+          </div>
+        </section>
+      </div>
       {dashboard.assumptions.length > 0 && (
         <details className="panel">
           <summary>Decision and assumptions</summary>
@@ -744,41 +655,6 @@ export function DashboardView({
           ))}
         </details>
       )}
-      <TrendChart dashboard={dashboard} onUpdate={onUpdate} />
-      <section className="panel">
-        <h2>Needs your attention</h2>
-        <p>{dashboard.warnings.length} prioritized changes</p>
-        {dashboard.warnings.map((w) => (
-          <button
-            key={w.id}
-            className="warning-row"
-            onClick={() => setWarning(w)}
-          >
-            <span
-              className={`warning-icon ${w.priority === "high" ? "high" : "medium"}`}
-            >
-              <Icon name="warning" />
-            </span>
-            <span className="warning-copy">
-              <strong>{w.title}</strong>
-              <small>
-                {w.priority} priority · {w.changedValues[0] ?? w.ruleKey}
-              </small>
-            </span>
-            <Icon name="chevron" />
-          </button>
-        ))}
-        {!dashboard.warnings.length && (
-          <p>No rule-based warnings in this reporting period.</p>
-        )}
-        <div className="human-note">
-          <strong>You remain in control.</strong>
-          <p>
-            dAIshi highlights evidence and possible issues. You decide what to
-            do next.
-          </p>
-        </div>
-      </section>
       {detail && (
         <KpiEvidence
           result={detail}

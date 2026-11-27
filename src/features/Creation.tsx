@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
-import { calculateAll } from "../domain/calculations";
+import { calculateAll, validRange } from "../domain/calculations";
 import { useNavigate, useParams } from "react-router-dom";
 import { useWorkspace } from "../app/Workspace";
-import { newDraft, buildDashboard, uid } from "../app/workflow";
+import {
+  newDraft,
+  buildDashboard,
+  confirmFields,
+  uid,
+  withSampleData,
+} from "../app/workflow";
 import type { Draft, KpiDefinition, Scenario } from "../domain/models";
 import { recommendKpis } from "../domain/kpiDefinitions";
-import {
-  createSampleSources,
-  getDefaultRanges,
-} from "../domain/sampleScenarios";
+import { getDefaultRanges } from "../domain/sampleScenarios";
 import { suggestMappings } from "../domain/mappingRules";
 import { parseFile, createDataSource } from "../infrastructure/parsers";
 import { Sheet } from "../components/Sheet";
 import { Badge } from "../components/Badge";
 import { Icon } from "../components/Icon";
 const steps = ["context", "kpis", "upload", "mapping", "generating"];
+const stepLabels = ["Decision", "KPIs", "Data", "Review"];
 const titles = [
   "Start with a decision",
   "What matters to you?",
@@ -33,7 +37,7 @@ export function Creation() {
   const [busy, setBusy] = useState(false);
   const [custom, setCustom] = useState(false);
   const [search, setSearch] = useState("");
-  const [generation, setGeneration] = useState(0);
+  const [goalError, setGoalError] = useState(false);
   useEffect(() => {
     if (!draft) {
       patch({ draft: newDraft(), draftStep: 0 });
@@ -55,14 +59,7 @@ export function Creation() {
       );
       return;
     }
-    let cancelled = false;
-    setGeneration(0);
-    const timer = setInterval(
-      () => setGeneration((n) => Math.min(n + 1, 4)),
-      220,
-    );
-    const finish = setTimeout(() => {
-      if (cancelled) return;
+    const finish = requestAnimationFrame(() => {
       try {
         const existing = state.dashboards.find(
           (d) => d.id === state.editingDashboardId,
@@ -86,12 +83,8 @@ export function Creation() {
           "Generation was interrupted. Your confirmed draft is safe. Return to mapping and retry.",
         );
       }
-    }, 1300);
-    return () => {
-      cancelled = true;
-      clearInterval(timer);
-      clearTimeout(finish);
-    };
+    });
+    return () => cancelAnimationFrame(finish);
     // Snapshot the confirmed draft only when the generation route mounts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
@@ -104,12 +97,54 @@ export function Creation() {
     navigate(`/onboarding/${steps[n]}`);
   };
   const setScenario = (scenario: Scenario) => {
+    if (scenario === draft.context.scenario) return;
+    const previous = newDraft(draft.context.scenario);
     const fresh = newDraft(scenario);
+    const context = { ...draft.context, scenario };
+    for (const field of [
+      "industry",
+      "sector",
+      "companyOrProject",
+      "goal",
+    ] as const) {
+      if (draft.context[field] === previous.context[field])
+        context[field] = fresh.context[field];
+    }
+    const definitions =
+      JSON.stringify(draft.definitions) === JSON.stringify(previous.definitions)
+        ? fresh.definitions
+        : draft.definitions;
     update({
-      ...fresh,
-      context: { ...fresh.context, position: draft.context.position },
+      context,
+      definitions,
+      mappings: mergeMappings(draft.sources, definitions),
+      assumptions:
+        draft.assumptions.length === 1 &&
+        draft.assumptions[0]?.expectedOutcome ===
+          previous.assumptions[0].expectedOutcome
+          ? fresh.assumptions
+          : draft.assumptions,
     });
+    setGoalError(false);
   };
+  function mergeMappings(
+    sources: Draft["sources"],
+    definitions: Draft["definitions"],
+  ) {
+    return suggestMappings(sources, definitions).map((suggestion) => {
+      const saved = draft?.mappings.find(
+        (mapping) => mapping.id === suggestion.id,
+      );
+      return saved &&
+        sources.some(
+          (source) =>
+            source.id === saved.sourceId &&
+            source.fieldNames.includes(saved.sourceField),
+        )
+        ? saved
+        : suggestion;
+    });
+  }
   const changeKpi = (id: string, part: Partial<KpiDefinition>) =>
     update({
       definitions: draft.definitions.map((d) =>
@@ -117,12 +152,7 @@ export function Creation() {
       ),
     });
   const loadSample = () => {
-    const sources = createSampleSources(draft.context.scenario);
-    update({
-      sources,
-      mappings: suggestMappings(sources, draft.definitions),
-      ...getDefaultRanges(sources),
-    });
+    update(withSampleData(draft));
     setError("");
   };
   const upload = async (files: FileList | null) => {
@@ -156,25 +186,21 @@ export function Creation() {
         );
       }
     }
-    update({
-      sources,
-      mappings: suggestMappings(sources, draft.definitions),
-      ...getDefaultRanges(sources),
-    });
+    if (sources.length > draft.sources.length) {
+      update({
+        sources,
+        mappings: mergeMappings(sources, draft.definitions),
+        ...(draft.sources.length ? {} : getDefaultRanges(sources)),
+      });
+    }
     setError(errors.join(" "));
     setBusy(false);
   };
-  const next = () => {
-    if (
-      index === 0 &&
-      [
-        draft.context.industry,
-        draft.context.sector,
-        draft.context.position,
-        draft.context.goal,
-      ].some((v) => !v.trim())
-    ) {
-      setError("Complete the labeled context fields to continue.");
+  const next = (approve = false) => {
+    setError("");
+    if (index === 0 && !draft.context.goal.trim()) {
+      setGoalError(true);
+      document.getElementById("dashboard-goal")?.focus();
       return;
     }
     if (index === 1) {
@@ -197,45 +223,27 @@ export function Creation() {
         );
         return;
       }
-      const suggestions = suggestMappings(draft.sources, draft.definitions);
-      update({
-        mappings: suggestions.map((s) => {
-          const old = draft.mappings.find(
-            (m) => m.kpiId === s.kpiId && m.inputName === s.inputName,
-          );
-          return old &&
-            draft.sources.some(
-              (source) =>
-                source.id === old.sourceId &&
-                source.fieldNames.includes(old.sourceField),
-            )
-            ? old
-            : s;
-        }),
-      });
+      update({ mappings: mergeMappings(draft.sources, draft.definitions) });
     }
     if (index === 2 && !draft.sources.length) {
       setError("Load fictional sample data or choose a CSV/XLSX file.");
       return;
     }
     if (index === 3) {
-      if (draft.mappings.some((m) => m.status === "suggested")) {
+      const mappings = approve ? confirmFields(draft.mappings) : draft.mappings;
+      if (mappings.some((m) => m.status === "suggested")) {
         setError(
-          "Confirm each suggested mapping or choose “Leave unresolved”. Nothing is automatically confirmed.",
+          "Confirm each suggested mapping or choose “Leave unresolved”.",
         );
         return;
       }
-      if (!draft.mappings.some((m) => m.status === "confirmed")) {
+      if (!mappings.some((m) => m.status === "confirmed")) {
         setError(
           "Confirm at least one valid mapping. Other KPIs may remain unavailable.",
         );
         return;
       }
-      if (
-        [draft.dateRange, draft.comparisonPeriod].some(
-          (r) => !r.start || !r.end || r.start > r.end,
-        )
-      ) {
+      if (![draft.dateRange, draft.comparisonPeriod].every(validRange)) {
         setError("Choose valid reporting and comparison periods.");
         return;
       }
@@ -246,31 +254,51 @@ export function Creation() {
         setError("Reporting and comparison periods must not overlap.");
         return;
       }
+      update({ mappings });
     }
     go(index + 1);
   };
+  const selectedKpis = new Set(draft.definitions.map((kpi) => kpi.id));
+  const query = search.trim().toLowerCase();
   const options = [
-    ...recommendKpis(draft.context.scenario),
-    ...draft.definitions.filter((d) => d.custom),
-  ];
+    ...draft.definitions,
+    ...recommendKpis(draft.context.scenario).filter(
+      (kpi) => !selectedKpis.has(kpi.id),
+    ),
+  ].filter((kpi) =>
+    `${kpi.name} ${kpi.category}`.toLowerCase().includes(query),
+  );
+  const suggested = draft.mappings.filter((m) => m.status === "suggested");
+  const advancedDates = index === 3 && !!error && /periods/.test(error);
   return (
     <Sheet
       title={titles[index]}
-      eyebrow={`Create dashboard · ${index + 1} of 5`}
-      onClose={close}
+      eyebrow={state.editingDashboardId ? "Edit dashboard" : "Create dashboard"}
+      onClose={() => {
+        if (!busy) close();
+      }}
       footer={
         <div className="actions">
           {index > 0 && (
             <button
               className="secondary"
+              disabled={busy}
               onClick={() => go(index === 4 ? 3 : index - 1)}
             >
               Back
             </button>
           )}
           {index < 4 && (
-            <button className="primary" disabled={busy} onClick={next}>
-              {index === 3 ? "Generate dashboard" : "Continue"}
+            <button
+              className="primary"
+              disabled={busy}
+              onClick={() => next(suggested.length > 0)}
+            >
+              {index === 3
+                ? suggested.length
+                  ? "Confirm fields and generate"
+                  : "Generate dashboard"
+                : "Continue"}
               <Icon name="arrow" />
             </button>
           )}
@@ -283,25 +311,26 @@ export function Creation() {
       }
     >
       <ol className="stepper" aria-label="Creation progress">
-        {steps.map((s, i) => (
+        {stepLabels.map((label, i) => (
           <li
-            key={s}
+            key={label}
             aria-current={i === index ? "step" : undefined}
             className={i <= index ? "active" : ""}
           >
-            {i + 1}
+            {label}
           </li>
         ))}
       </ol>
       {error && (
         <div role="alert" className="error">
-          {error} Existing saved dashboards are safe.
+          {error}
         </div>
       )}
       {index === 0 && (
         <div className="stack">
           <p className="subtitle">
-            Define KPIs. Add data. Get a clear, evidence-based view.
+            Pick a scenario for recommended KPIs. Then name the decision you
+            want to track.
           </p>
           <div className="choice-grid">
             {(["restaurant", "consulting"] as const).map((s) => (
@@ -321,70 +350,100 @@ export function Creation() {
               </button>
             ))}
           </div>
-          {(
-            [
-              "companyOrProject",
-              "industry",
-              "sector",
-              "position",
-              "goal",
-            ] as const
-          ).map((k) => (
-            <label className="field" key={k}>
-              {
-                {
-                  companyOrProject: "Company or project",
-                  industry: "Industry",
-                  sector: "Sector / business area",
-                  position: "Your position",
-                  goal: "Decision or goal",
-                }[k]
-              }
-              {k === "goal" ? (
-                <textarea
-                  maxLength={1000}
-                  value={draft.context[k]}
-                  onChange={(e) =>
-                    update({
-                      context: { ...draft.context, [k]: e.target.value },
-                    })
-                  }
-                />
-              ) : (
-                <input
-                  maxLength={150}
-                  value={draft.context[k]}
-                  onChange={(e) =>
-                    update({
-                      context: { ...draft.context, [k]: e.target.value },
-                    })
-                  }
-                />
-              )}
-            </label>
-          ))}
           <label className="field">
-            Original assumption
-            <textarea
-              maxLength={1000}
-              value={draft.assumptions[0]?.expectedOutcome ?? ""}
+            <span id="company-label">Company or project</span>
+            <input
+              aria-labelledby="company-label"
+              aria-describedby="company-hint"
+              maxLength={150}
+              value={draft.context.companyOrProject}
               onChange={(e) =>
                 update({
-                  assumptions: [
-                    {
-                      id: draft.assumptions[0]?.id ?? uid(),
-                      title: "Decision assumption",
-                      description: draft.context.goal,
-                      expectedOutcome: e.target.value,
-                      createdAt:
-                        draft.assumptions[0]?.createdAt ??
-                        new Date().toISOString(),
-                    },
-                  ],
+                  context: {
+                    ...draft.context,
+                    companyOrProject: e.target.value,
+                  },
                 })
               }
             />
+            <small id="company-hint">
+              Optional. This becomes the dashboard name.
+            </small>
           </label>
+          <label className="field" htmlFor="dashboard-goal">
+            <span id="goal-label">Decision or goal</span>
+            <textarea
+              id="dashboard-goal"
+              maxLength={1000}
+              required
+              value={draft.context.goal}
+              aria-labelledby="goal-label"
+              aria-invalid={goalError}
+              aria-describedby={goalError ? "goal-error" : "goal-hint"}
+              onChange={(e) => {
+                update({ context: { ...draft.context, goal: e.target.value } });
+                if (e.target.value.trim()) setGoalError(false);
+              }}
+            />
+            {goalError ? (
+              <small id="goal-error" className="field-error" role="alert">
+                Enter a decision or goal to continue.
+              </small>
+            ) : (
+              <small id="goal-hint">
+                Required. For example, “Decide whether to open a second
+                location.”
+              </small>
+            )}
+          </label>
+          <details className="setup-advanced">
+            <summary>Advanced context</summary>
+            <div className="stack">
+              {(
+                [
+                  ["industry", "Industry"],
+                  ["sector", "Sector / business area"],
+                  ["position", "Your position"],
+                ] as const
+              ).map(([key, label]) => (
+                <label className="field" key={key}>
+                  {label}
+                  <input
+                    maxLength={150}
+                    value={draft.context[key]}
+                    onChange={(e) =>
+                      update({
+                        context: { ...draft.context, [key]: e.target.value },
+                      })
+                    }
+                  />
+                </label>
+              ))}
+              <label className="field">
+                Original assumption
+                <textarea
+                  maxLength={1000}
+                  value={draft.assumptions[0]?.expectedOutcome ?? ""}
+                  onChange={(e) =>
+                    update({
+                      assumptions: [
+                        {
+                          id: draft.assumptions[0]?.id ?? uid(),
+                          title: "Decision assumption",
+                          description: draft.context.goal,
+                          expectedOutcome: e.target.value,
+                          createdAt:
+                            draft.assumptions[0]?.createdAt ??
+                            new Date().toISOString(),
+                        },
+                        ...draft.assumptions.slice(1),
+                      ],
+                    })
+                  }
+                />
+              </label>
+            </div>
+          </details>
           <p className="notice">
             Use fictional data only. The prototype runs in this browser.
           </p>
@@ -392,10 +451,12 @@ export function Creation() {
       )}
       {index === 1 && (
         <div className="stack">
-          <p>
-            Choose your indicators and targets. Percentage targets use 0–100.
-            Targets apply to the full selected reporting period.
-          </p>
+          <div className="setup-summary">
+            <p role="status">
+              <strong>{draft.definitions.length} selected</strong> · Choose at
+              least one KPI. You can change targets later.
+            </p>
+          </div>
           <label className="field">
             Find a KPI
             <input
@@ -404,29 +465,38 @@ export function Creation() {
               type="search"
             />
           </label>
-          {options
-            .filter((k) => k.name.toLowerCase().includes(search.toLowerCase()))
-            .map((k) => {
-              const selected = draft.definitions.find((d) => d.id === k.id);
-              return (
-                <div className="panel stack" key={k.id}>
-                  <label className="checkbox">
-                    <input
-                      type="checkbox"
-                      checked={!!selected}
-                      onChange={(e) =>
-                        update({
-                          definitions: e.target.checked
-                            ? [...draft.definitions, k]
-                            : draft.definitions.filter((x) => x.id !== k.id),
-                        })
-                      }
-                    />
-                    <strong>{k.name}</strong>
-                  </label>
-                  <p className="subtitle">{k.description}</p>
-                  {selected && (
-                    <>
+          {!options.length && (
+            <p className="notice">
+              No KPIs match that search. Try a metric name or category.
+            </p>
+          )}
+          {options.map((k) => {
+            const selected = draft.definitions.find((d) => d.id === k.id);
+            return (
+              <div className="stack kpi-option" key={k.id}>
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={!!selected}
+                    onChange={(e) =>
+                      update({
+                        definitions: e.target.checked
+                          ? [...draft.definitions, k]
+                          : draft.definitions.filter((x) => x.id !== k.id),
+                      })
+                    }
+                  />
+                  <strong>{k.name}</strong>
+                </label>
+                <p className="subtitle">{k.description}</p>
+                {selected && (
+                  <details className="setup-advanced">
+                    <summary>Targets and alerts for {k.name}</summary>
+                    <div className="stack">
+                      <small>
+                        Targets apply to the whole reporting period. Enter
+                        percentages as 0–100.
+                      </small>
                       <label className="field">
                         Target for {k.name}
                         <input
@@ -473,6 +543,10 @@ export function Creation() {
                           />
                         </label>
                       </div>
+                      <small>
+                        Shortfall is measured against the target. Any adverse
+                        difference from a zero target is critical.
+                      </small>
                       <div className="actions">
                         <button
                           className="secondary"
@@ -487,17 +561,12 @@ export function Creation() {
                           Move {k.name} up
                         </button>
                       </div>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          <p className="notice">
-            Shortfall = adverse difference ÷ |target| × 100, adjusted for
-            whether higher or lower is better. At a zero target, any adverse
-            difference is critical. Thresholds do not imply statistical
-            significance.
-          </p>
+                    </div>
+                  </details>
+                )}
+              </div>
+            );
+          })}
           <button className="secondary" onClick={() => setCustom(!custom)}>
             {custom ? "Cancel custom KPI" : "Add custom KPI"}
           </button>
@@ -514,10 +583,10 @@ export function Creation() {
       {index === 2 && (
         <div className="stack">
           <p>
-            Use fictional sample data or small, non-confidential local files.
-            Files are parsed in this browser.
+            Load a fictional sample or choose your own fictional CSV or XLSX
+            files. Next you’ll check which columns feed each KPI.
           </p>
-          <button className="primary" onClick={loadSample}>
+          <button className="secondary" disabled={busy} onClick={loadSample}>
             {draft.sources.length ? "Replace sources with" : "Load"} fictional{" "}
             {draft.context.scenario} data
           </button>
@@ -590,7 +659,7 @@ export function Creation() {
                     const sources = draft.sources.filter((x) => x.id !== s.id);
                     update({
                       sources,
-                      mappings: suggestMappings(sources, draft.definitions),
+                      mappings: mergeMappings(sources, draft.definitions),
                     });
                   }}
                 >
@@ -608,7 +677,27 @@ export function Creation() {
             fields and confirm every connection; low confidence is never
             accepted automatically.
           </p>
-          <DateFields draft={draft} update={update} />
+          <div className="setup-summary" aria-label="Mapping status">
+            <p>
+              <strong>
+                {draft.mappings.filter((m) => m.status === "confirmed").length}{" "}
+                confirmed
+              </strong>{" "}
+              · {suggested.length} to confirm ·{" "}
+              {draft.mappings.filter((m) => m.status === "unresolved").length}{" "}
+              unresolved
+            </p>
+            {suggested.length > 0 && (
+              <p>
+                “Confirm fields and generate” approves the selected source
+                fields shown below.
+              </p>
+            )}
+          </div>
+          <details className="setup-advanced" open={advancedDates || undefined}>
+            <summary>Reporting and comparison dates</summary>
+            <DateFields draft={draft} update={update} />
+          </details>
           <section className="notice" aria-label="KPI data coverage">
             <h3>KPI data coverage</h3>
             {calculateAll(draft).map((result) => (
@@ -643,8 +732,16 @@ export function Creation() {
                               : ""
                           }
                           onChange={(e) => {
-                            const [sourceId = "", sourceField = ""] =
-                              e.target.value.split("::");
+                            const selectedField = e.target.value;
+                            const divider = selectedField.indexOf("::");
+                            const sourceId =
+                              divider < 0
+                                ? ""
+                                : selectedField.slice(0, divider);
+                            const sourceField =
+                              divider < 0
+                                ? ""
+                                : selectedField.slice(divider + 2);
                             update({
                               mappings: draft.mappings.map((x) =>
                                 x.id === m.id
@@ -721,15 +818,7 @@ export function Creation() {
           ))}
           <button
             className="secondary"
-            onClick={() =>
-              update({
-                mappings: draft.mappings.map((m) =>
-                  m.sourceId && m.sourceField
-                    ? { ...m, status: "confirmed" }
-                    : { ...m, status: "unresolved" },
-                ),
-              })
-            }
+            onClick={() => update({ mappings: confirmFields(draft.mappings) })}
           >
             Confirm all selected fields
           </button>
@@ -741,22 +830,11 @@ export function Creation() {
         </div>
       )}
       {index === 4 && (
-        <div className="stack generation">
-          <Icon name="trend" size={40} />
-          <h3>From information to understanding.</h3>
-          {[
-            "Reading data",
-            "Matching confirmed fields",
-            "Calculating KPIs",
-            "Checking quality",
-            "Assembling dashboard",
-          ].map((s, i) => (
-            <p key={s} className={i <= generation ? "complete" : ""}>
-              {i <= generation ? "✓" : "○"} {s}
-            </p>
-          ))}
-          <p className="notice">
-            Local rules and real calculations. No information is sent to AI.
+        <div className="stack generation" role="status">
+          <Icon name="trend" size={32} />
+          <p>
+            Calculating KPIs from your confirmed fields and checking the
+            reporting periods.
           </p>
         </div>
       )}

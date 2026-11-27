@@ -7,6 +7,7 @@ export type SheetProps = {
   onClose: () => void;
   children: ReactNode;
   footer?: ReactNode;
+  className?: string;
 };
 
 /** Native modal dialogs provide keyboard containment and make the background inert. */
@@ -16,8 +17,12 @@ export function Sheet({
   onClose,
   children,
   footer,
+  className,
 }: SheetProps) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const content = useRef<HTMLDivElement>(null);
+  const previousTitle = useRef(title);
   const titleId = useId();
   const close = useRef(onClose);
   close.current = onClose;
@@ -37,9 +42,15 @@ export function Sheet({
       if (opener?.isConnected) opener.focus();
     };
   }, []);
+  useEffect(() => {
+    if (previousTitle.current === title) return;
+    previousTitle.current = title;
+    content.current?.scrollTo(0, 0);
+    heading.current?.focus({ preventScroll: true });
+  }, [title]);
   return (
     <dialog
-      className="sheet"
+      className={className ? `sheet ${className}` : "sheet"}
       ref={dialog}
       aria-labelledby={titleId}
       onKeyDown={(event) => {
@@ -63,8 +74,7 @@ export function Sheet({
           event.preventDefault();
           event.currentTarget.focus();
         } else if (
-          !event.currentTarget.contains(active) ||
-          active === event.currentTarget ||
+          !(active instanceof HTMLElement && controls.includes(active)) ||
           (event.shiftKey && active === first) ||
           (!event.shiftKey && active === last)
         ) {
@@ -92,7 +102,9 @@ export function Sheet({
       <header className="sheet-header">
         <div>
           {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-          <h2 id={titleId}>{title}</h2>
+          <h2 id={titleId} ref={heading} tabIndex={-1}>
+            {title}
+          </h2>
         </div>
         <button
           type="button"
@@ -104,7 +116,9 @@ export function Sheet({
           <Icon name="close" />
         </button>
       </header>
-      <div className="sheet-content">{children}</div>
+      <div className="sheet-content" ref={content}>
+        {children}
+      </div>
       {footer && <footer className="sheet-footer">{footer}</footer>}
     </dialog>
   );

@@ -1,5 +1,6 @@
 export type Scenario = "restaurant" | "consulting";
 export type DateRange = { start: string; end: string };
+export type DashboardFilters = Record<string, string | string[]>;
 export type UserContext = {
   industry: string;
   sector: string;
@@ -108,7 +109,7 @@ export type Draft = {
   mappings: DataMapping[];
   dateRange: DateRange;
   comparisonPeriod: DateRange;
-  filters: Record<string, string>;
+  filters: DashboardFilters;
 };
 export type Dashboard = Draft & {
   id: string;

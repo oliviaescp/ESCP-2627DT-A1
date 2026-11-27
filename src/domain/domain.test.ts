@@ -100,6 +100,35 @@ describe("deterministic fixed formulas", () => {
     expect(value.value).toBe(45000);
     expect(value.previousValue).toBe(40000);
   });
+  it("combines choices within a field and intersects across fields in both periods", () => {
+    const f = fixture("consulting");
+    const filtered = calculateKpi(
+      definition("consulting-revenue"),
+      f.sources,
+      f.mappings,
+      f.dateRange,
+      f.comparisonPeriod,
+      {
+        project: ["Atlas", "Willow"],
+        project_status: ["Completed"],
+      },
+    );
+    expect(filtered.value).toBe(45000);
+    expect(filtered.previousValue).toBe(40000);
+    const empty = calculateKpi(
+      definition("consulting-revenue"),
+      f.sources,
+      f.mappings,
+      f.dateRange,
+      f.comparisonPeriod,
+      {
+        project: ["Willow"],
+        project_status: ["Completed"],
+      },
+    );
+    expect(empty.status).toBe("unavailable");
+    expect(empty.qualityNotes[0]).toMatch(/No matching source rows/);
+  });
   it("does not mutate inputs and returns identical outputs", () => {
     const f = fixture();
     const before = JSON.stringify(f);

@@ -352,7 +352,7 @@ Use explicit “confirmed,” “needs review,” and “cannot calculate” sta
 Do not hide unresolved mappings behind a generic success message.
 Keep the original file name and field name visible in the review path.
 Responsive and accessibility expectations
-The prototype targets phone widths of 375–430 CSS pixels and supports a 320-pixel narrow layout. Cards may stack at narrow widths. Source and warning details remain accessible.
+The prototype adapts from 320-pixel phone screens to tablets and desktops. Cards stack at narrow widths and align in a wider grid when space allows. Source and warning details remain accessible.
 The interface must use readable text, keyboard-accessible controls, visible focus states, sufficient contrast, labels for form inputs, and text alternatives for status colors and charts. Charts should provide an adjacent table or summary for users who cannot interpret the visualization.
 
 ### User stories
@@ -421,7 +421,7 @@ As a prototype user, I want clear sample-data labeling so that I do not confuse 
 | NFR-08 | Security | The prototype must avoid real confidential data and clearly communicate data-handling limitations. |
 | NFR-09 | Privacy | Users must be able to delete uploaded files and dashboards; retention and GDPR work must be defined before production use. |
 | NFR-10 | Accessibility | Keyboard navigation, visible focus, readable contrast, labeled controls, and non-color status indicators are required. |
-| NFR-11 | Compatibility | The prototype targets current phone browsers, with a centered phone layout at larger widths. |
+| NFR-11 | Compatibility | The prototype targets current phone, tablet, and desktop browsers. |
 | NFR-12 | Maintainability | KPI definitions, thresholds, sample data, and content should be configurable rather than embedded in individual screens. |
 | NFR-13 | Scalability boundary | The MVP may limit file size and row count, but limits must be stated before upload and handled with a clear recovery path. |
 | NFR-14 | Human oversight | The product must not present an AI suggestion as a final business, investment, or operational decision. |

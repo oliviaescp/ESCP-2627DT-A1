@@ -1,4 +1,5 @@
 import type {
+  DashboardFilters,
   DataMapping,
   DataSource,
   DateRange,
@@ -8,6 +9,7 @@ import type {
   KpiStatus,
   SourceReference,
 } from "./models";
+import { activeFilters } from "./filters";
 
 export function parseNumber(value: unknown): number | undefined {
   if (typeof value === "number")
@@ -93,7 +95,7 @@ export function calculateKpi(
   mappings: DataMapping[],
   period: DateRange,
   comparisonPeriod?: DateRange,
-  filters: Record<string, string> = {},
+  filters: DashboardFilters = {},
 ): KpiResult {
   const notes: string[] = [];
   const base: KpiResult = {
@@ -202,25 +204,22 @@ export function calculateKpi(
     );
     return base;
   }
-  const filtered = dated.filter((item) =>
-    Object.entries(filters).every(
-      ([field, value]) =>
-        !value || value === "*" || String(item.row[field] ?? "") === value,
-    ),
-  );
-  if (
-    Object.keys(filters).some(
-      (field) =>
-        filters[field] &&
-        filters[field] !== "*" &&
-        !source.fieldNames.includes(field),
-    )
-  ) {
+  const selections = activeFilters(filters);
+  if (selections.some(({ field }) => !source.fieldNames.includes(field))) {
     notes.push(
       "A selected filter field is absent from this source. Clear the filter to calculate this KPI.",
     );
     return base;
   }
+  const selectedValues = selections.map(({ field, values }) => ({
+    field,
+    values: new Set(values),
+  }));
+  const filtered = dated.filter((item) =>
+    selectedValues.every(({ field, values }) =>
+      values.has(String(item.row[field] ?? "")),
+    ),
+  );
   const rowsFor = (range: DateRange) =>
     filtered.filter(
       (item) => item.date! >= range.start && item.date! <= range.end,
@@ -440,6 +439,25 @@ export function calculateAll(draft: Draft): KpiResult[] {
     ),
   );
 }
+export function formatMetric(
+  value: number | undefined,
+  unit: KpiResult["unit"],
+  compact = false,
+) {
+  if (value === undefined || !Number.isFinite(value)) return "Unavailable";
+  if (unit === "currency")
+    return new Intl.NumberFormat("en-IE", {
+      style: "currency",
+      currency: "EUR",
+      maximumFractionDigits: compact ? 1 : 2,
+      notation: compact ? "compact" : "standard",
+    }).format(value);
+  return (
+    new Intl.NumberFormat("en-GB", { maximumFractionDigits: 1 }).format(value) +
+    (unit === "percentage" ? "%" : unit === "hours" ? " h" : "")
+  );
+}
+
 export function formatValue(
   value: number | undefined,
   unit: KpiDefinition["unit"],

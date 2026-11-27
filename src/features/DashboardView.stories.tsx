@@ -51,7 +51,7 @@ function DashboardExample({
   );
 
   return (
-    <main className="app-shell content" style={{ maxWidth: 430 }}>
+    <main className="content">
       <DashboardView
         {...args}
         dashboard={{ ...view, updatedAt: sampleDate, warnings }}

@@ -147,7 +147,7 @@ const draftObject = z.object({
   mappings: z.array(mapping).max(1000),
   dateRange,
   comparisonPeriod: dateRange,
-  filters: z.record(z.string(), text),
+  filters: z.record(z.string(), z.union([text, z.array(text)])),
 });
 export const draftSchema: z.ZodType<Draft> = draftObject;
 export const dashboardSchema: z.ZodType<Dashboard> = draftObject.extend({
@@ -167,5 +167,6 @@ export const workspaceSchema = z.object({
   activeDashboardId: id.nullable(),
   theme: z.enum(["light", "dark", "system"]),
   freshnessDays: z.number().int().min(1).max(3650),
+  guideSeen: z.boolean().default(false),
 });
 export type PersistedWorkspace = z.infer<typeof workspaceSchema>;

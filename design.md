@@ -4,72 +4,51 @@
 
 ## Design reference and phone adaptation
 
-> **VISUAL EXAMPLE — HOW THE APP SHOULD LOOK**
->
-> **Build a Website.zip is an example of the intended look and feel of the dAIshi app.** Use it as design inspiration for colors, typography, cards, charts, and overall visual style. The phone previews below are examples of how that style can be adapted for mobile.
->
-> **This is a visual reference, not a finished app or a complete functional specification.** The final app should follow the phone-only requirements in `product.md` and `architecture.md`. The example's desktop layout, sample values, and placeholder controls do not define required behavior.
-
-The supplied Figma export, **Build a Website.zip**, is the visual reference for dAIshi. Its warm neutral colors, serif headings, restrained charts, status pills, and evidence-first dashboard inform the phone design.
-
-Browse the source export and all three phone previews in the separate [Design assets](#design-assets) section.
-
-The target product is **phone only**, as defined in [architecture.md](architecture.md). The desktop layout inside the ZIP supplies visual inspiration; the phone experience described below governs implementation. The primary target is 375–430 CSS pixels wide, with a 320-pixel minimum-width check. Larger screens may present a centered phone layout.
+The [original design assets](#design-assets) show how the project developed. The current interface keeps the evidence-first layout and uses cobalt, cool surfaces, and stronger typography for a responsive decision workspace.
 
 ## Product character
 
-dAIshi is a calm, practical operations dashboard for restaurant teams. The interface should feel trustworthy, quietly premium, and human. Balance dense business information with generous spacing, restrained color, serif display typography, and explicit status cues.
-
+dAIshi helps restaurant and consulting teams track business decisions and trace each result to its source. The overview prioritizes creating a dashboard and includes a real preview of the fictional restaurant data. The dashboard leads with the decision, active periods, KPIs, and warnings.
 ## Visual foundations
 
 ### Color
 
 | Token | Light theme | Purpose |
 | --- | --- | --- |
-| Ink | `#20211f` | Primary text, dark controls, chart lines |
-| Muted | `#686c64` | Supporting text and metadata |
-| Canvas | `#f4f5f2` | Application background |
+| Ink | `#19263b` | Primary text |
+| Muted | `#526179` | Supporting text and metadata |
+| Canvas | `#f3f5f9` | Application background |
 | Surface | `#ffffff` | Cards, panels, forms |
-| Line | `#e2e4de` | Borders and dividers |
-| Green | `#31715b` | Positive status and accents |
-| Soft green | `#e9f3ee` | Positive status backgrounds |
-| Red | `#a4493e` | High-severity and negative status |
-| Soft red | `#f8ece9` | High-severity backgrounds |
-| Amber | `#865d20` | Warnings, targets, watch status |
-| Soft amber | `#f8f0df` | Warning backgrounds |
+| Line | `#d8dfea` | Borders and dividers |
+| Cobalt | `#264cba` | Primary actions, focus, active filters, chart series |
+| Green | `#236950` | Positive status |
+| Soft green | `#e6f3ee` | Positive status backgrounds |
+| Red | `#9c383b` | High-severity and negative status |
+| Soft red | `#fbecee` | High-severity backgrounds |
+| Amber | `#805112` | Warnings, targets, watch status |
+| Soft amber | `#faf0dc` | Warning backgrounds |
 
-Dark mode uses a deep olive-black canvas, dark surfaces, softened light text, and brighter semantic accents. Pair status color with a text label or icon. Check contrast for final text sizes before release.
+Dark mode uses a navy canvas, light text, and a lighter cobalt accent. Pair status color with a text label or icon. Check contrast for final text sizes before release.
 
 ### Typography
 
-Use a system sans-serif stack such as Inter when available, SF Pro Text, or Segoe UI for interface text; no external font download is required. Use Georgia or Times New Roman for display headings and key metric values, with medium weight and tight letter spacing.
+Use Avenir Next when available, followed by Segoe UI and system sans-serif. Display headings use heavier weights and tighter letter spacing. KPI values use tabular numerals.
 
-Eyebrows and status labels are small, bold, and use increased letter spacing. Supporting text uses muted gray. Keep essential body text readable on a phone; the export's compact desktop text is not a requirement for every mobile screen.
+## Responsive layout
 
-## Phone layout
+The dashboard groups the decision and time periods above the KPI cards. On phones, use one or two card columns and stack the chart above warnings. At tablet widths, use up to four KPI columns. At desktop widths, place the chart and warnings side by side. Keep the same information order and accessible controls at every width.
 
-Use a single scrolling page with approximately 20 pixels of horizontal padding and 18–28 pixels between major sections. Respect top and bottom device safe areas. Reserve enough space beneath the content for fixed navigation.
-
-The dashboard order is:
-
-1. Compact header with dAIshi branding, theme control, and a circular new-dashboard action.
-2. Dashboard name, decision context, and an edit action.
-3. Context card with period, sample-data status, and last-updated information.
-4. Two-column KPI grid with current values, targets, deltas, and evidence actions.
-5. Full-width revenue and cost chart.
-6. Prioritized warnings and a reminder that the human makes the decision.
-
-Keep sources in the dedicated Sources destination. Avoid desktop sidebars, side-by-side chart panels, wide tables, and hover-dependent controls in the phone product.
+**Dates and filters** opens a sheet for period presets, custom comparison dates, and searchable choices from source fields. Active selections appear as removable chips. Persistent navigation sits at the bottom of small screens and moves into the header at wider widths.
 
 ## Navigation and controls
 
-Use a fixed bottom bar with four labeled destinations: **Overview**, **Sources**, **Alerts**, and **Settings**. Highlight the active destination with green text and a soft-green icon background. Alerts may show a small count badge. Keep labels visible on phones.
+Use a fixed bottom bar with four labeled destinations: **Overview**, **Sources**, **Alerts**, and **Settings**. Highlight the active destination in cobalt. On larger screens, show the same navigation in the header. Alerts may show a small count badge. Keep labels visible on phones.
 
 Place a prominent plus action in the header for creating a dashboard. Give every icon-only action an accessible name. The prototype does not require an account, sign-in screen, or user profile.
 
-Primary buttons use a dark ink background, light text, rounded corners, and semibold labels. Secondary buttons use a surface background and a thin border. Text buttons provide lower-emphasis actions. Aim for at least 44 × 44 CSS pixels for primary touch controls, including close, new-dashboard, and modal navigation actions.
+Primary buttons use the cobalt accent and rounded corners. Secondary buttons use a surface background and a thin border. Text buttons provide lower-emphasis actions. Aim for at least 44 × 44 CSS pixels for primary touch controls, including close, new-dashboard, and modal navigation actions.
 
-All controls need a visible focus state. Green focus rings should remain distinguishable against both themes.
+All controls need a visible focus state. Cobalt focus rings should remain distinguishable against both themes.
 
 ## KPI cards and status pills
 
@@ -86,7 +65,7 @@ Always distinguish sample results from local uploads. Missing or unresolved valu
 
 ## Charts and warnings
 
-Charts use thin grid lines, a dark revenue line, a dashed amber cost line, and a muted green target line. Place a small legend above the chart where it fits on a phone. Avoid saturated fills and decorative effects. Provide an accessible chart description and supporting values or summaries.
+Charts use thin grid lines, a cobalt revenue line, a dashed amber cost line, and a muted green target line. Place a small legend above the chart where it fits on a phone. Avoid saturated fills and decorative effects. Provide an accessible chart description and supporting values or summaries.
 
 Warnings use a tinted icon tile, specific title, supporting comparison, and a detail action. High severity uses red; watch or medium severity uses amber. Warning details explain what changed, the period, the relevant target, the supporting source, and uncertainty. Present recommendations as possible next steps.
 
@@ -120,7 +99,7 @@ These checks validate the current design prototype and do not establish completi
 
 ## Storybook
 
-Open the [published component catalogue](https://oliviaescp.github.io/ESCP-2627DT-A1/storybook/) or run `npm ci` followed by `npm run storybook` and open `http://localhost:6006`. The stories render the prototype’s React components with its shared stylesheet. Switch themes with the toolbar, and resize the preview to check phone widths. Use `npm run build-storybook` to generate a static catalogue.
+For the components in this checkout, run `npm ci` followed by `npm run storybook` and open `http://localhost:6006`. The stories render the prototype’s React components with its shared stylesheet. Switch themes with the toolbar, and resize the preview to check phone widths. Use `npm run build-storybook` to generate a static catalogue.
 
 | Story | What to inspect |
 | --- | --- |
@@ -150,7 +129,7 @@ The ZIP is preserved unchanged as reference material. It contains React and CSS 
 
 <img src="assets/design/daishi-phone-evidence.png" alt="Phone evidence sheet showing a KPI value, calculation, source reference, and close control" width="390" />
 
-These reference previews use fictional restaurant data. The current components and sample states are available in [Storybook](#storybook).
+These original previews use fictional restaurant data. Run [Storybook](#storybook) locally to inspect the current components and sample states.
 
 ### Dark theme preview
 

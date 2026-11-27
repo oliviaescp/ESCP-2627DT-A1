@@ -22,6 +22,7 @@ export type Workspace = {
   activeDashboardId: string | null;
   theme: "light" | "dark" | "system";
   freshnessDays: number;
+  guideSeen: boolean;
 };
 const empty: Workspace = {
   draft: null,
@@ -31,6 +32,7 @@ const empty: Workspace = {
   activeDashboardId: null,
   theme: "system",
   freshnessDays: 45,
+  guideSeen: false,
 };
 type Action = { type: "patch"; patch: Partial<Workspace> } | { type: "reset" };
 export function workspaceReducer(state: Workspace, action: Action): Workspace {

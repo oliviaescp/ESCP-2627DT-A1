@@ -49,6 +49,7 @@ export function createSampleSources(scenario: Scenario): DataSource[] {
         "available_hours",
         "client_satisfaction",
         "overdue_tasks",
+        "project_status",
       ];
   const data = restaurant
     ? restaurantRows
@@ -59,7 +60,7 @@ export function createSampleSources(scenario: Scenario): DataSource[] {
         ["2026-10-01", "Atlas", 45000, 1, 1, 110, 150, 8.1, 2],
         ["2026-10-01", "Cedar", 30000, 1, 1, 100, 150, 7.7, 3],
         ["2026-10-01", "Willow", 25000, 0, 1, 70, 120, 7.8, 4],
-      ];
+      ].map((row) => [...row, row[3] === row[4] ? "Completed" : "In progress"]);
   return [
     {
       id: `sample-${scenario}`,

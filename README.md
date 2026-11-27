@@ -22,7 +22,7 @@ npm ci
 npm run dev
 ```
 
-Vite prints the development URL. Use a phone viewport (375–430 CSS pixels); 320 pixels is also supported. Larger screens show a centered phone layout. For a static production build:
+Vite prints the development URL. The workspace adapts from 320-pixel phone screens to tablet and desktop layouts. For a static production build:
 
 ```sh
 npm run build
@@ -59,12 +59,14 @@ Browser tests use system Chromium at `/usr/bin/chromium` when available. On anot
 
 ## Walkthrough
 
-1. Choose **Create your first dashboard**. Select Restaurant or Consulting; enter context, goal, and the original assumption.
-2. Choose KPIs, edit targets and relative shortfall thresholds, and reorder selected cards. The restaurant defaults are revenue, food cost, repeat customers, and team satisfaction.
-3. Load the fictional sample or choose local files. Inspect detected fields and quality notes. Sample data can be downloaded as CSV.
-4. Review reporting/comparison periods and every suggested field. Correct mappings and confirm them individually or explicitly confirm the selected fields together. Missing mappings may be left unresolved; they produce unavailable values, never zero or invented results.
-5. Generate the dashboard. Open **View evidence**, a warning, and **Review source** to inspect formulas, operands, periods, source fields, and limitations.
-6. Use **Edit dashboard** to change context/name, assumptions, KPIs, targets, or sources. Changing periods, filters, or chart style recalculates the view. Overview lists saved dashboards; Sources supports inspection, replacement, and deletion. Settings controls theme and local workspace deletion.
+The welcome page offers **Restaurant sample** and **Consulting sample** for a ready-to-review fictional dashboard. **Create your first dashboard** starts the guided setup. A short dAIshi intro plays when the app loads. Choose **Skip intro** to go straight to your workspace. The intro is static when reduced motion is enabled. On Overview, open **Quick guide** to practice choosing KPIs, checking a source column, filtering a result, and opening its evidence in a fictional dashboard. You can pause on Overview or open the finished practice dashboard as a saved copy.
+
+1. Choose **Create your first dashboard** to set up your own view. Pick a scenario and add a decision or goal. **Advanced context** holds the role, industry, and original assumption.
+2. Select the KPIs you want to track. Open **Targets and alerts** for a KPI to edit its target and thresholds or change its position.
+3. Load a fictional sample or choose fictional CSV/XLSX files. Review detected columns and file notes.
+4. Review the field mappings. Confirm them individually or use **Confirm fields and generate** to approve the selected fields and open the dashboard. A KPI with missing inputs explains why its value is unavailable.
+5. Use **Dates and filters** to set reporting and comparison dates or choose values from source fields. Values within a field are combined, and each selected field must match the row. Remove individual chips or use **Reset view** to restore the latest source month and clear field selections.
+6. Read the **AI summary** for the key result, its comparison, and flagged items. It uses on-device rules, updates with the current view, and links to supporting evidence. Use **Edit dashboard** to change setup, **Sources** to manage files, and **Settings** to manage the theme and browser workspace.
 
 ## Calculation contract
 
@@ -93,11 +95,11 @@ Browser tests use system Chromium at `/usr/bin/chromium` when available. On anot
 
 ## Visual and product decisions
 
-The ZIP in `assets/design/` supplied visual inspiration for serif values, warm surfaces, status pills, cards, charts, and evidence panels. The source of the implemented design system is `src/styles.css`.
+The earlier design references in `assets/design/` informed the evidence-first layout. The current design system uses a cobalt accent, cool surfaces, and responsive KPI cards. Its tokens live in `src/styles.css`.
 
 The user resolved these material conflicts:
 
-- Use the preview’s two-column KPI grid at normal phone widths, collapsing at 320px or enlarged text.
+- Use a two-column KPI grid on phones, one column on the narrowest screens, and up to four columns at larger widths.
 - Use amber Watch, red Needs attention, and green On track, rather than blue medium warnings in the earlier interviews.
 - Use fixed formulas, metadata-only custom KPIs, and editable relative shortfall thresholds.
 - Follow the local-first architecture/prototype boundary instead of earlier requirements for live file links, accounts, legacy XLS, or desktop navigation.

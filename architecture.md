@@ -4,7 +4,7 @@
 
 **Product:** dAIshi, an evidence-based decision and KPI dashboard creator  
 **Architecture base:** Option A, local-first front-end prototype  
-**Target device:** Phone only  
+**Target devices:** Phone, tablet, and desktop\
 **Prototype status:** Functional demonstration, not a production system
 
 The prototype will run entirely in the browser. It will not require a backend, database server, account system, authentication, external AI service, live integration, email service, or production privacy infrastructure.
@@ -36,13 +36,9 @@ It has four practical advantages:
 
 The trade-off is intentional: dashboards are available only in the same browser on the same device. The prototype must clearly communicate this limitation.
 
-### Why phone-only
+### Why phone first
 
-The implementation is intentionally designed for a phone viewport rather than a general responsive desktop website. The phone is the only required target for this draft.
-
-The primary design target is a viewport between 375 and 430 CSS pixels wide. A larger screen may display the phone layout with extra empty space, but the product does not need a desktop navigation system, multi-column desktop dashboard, hover interactions, or desktop-specific controls.
-
-This reduces design and implementation complexity and keeps the main use case focused: a user opens the app, checks a few KPIs, and investigates the most important warning quickly.
+The dashboard puts the decision, time period, and key measures first at narrow widths. Desktop and tablet retain that reading order while using more space for metrics and supporting evidence. The business rules and browser storage are shared across layouts.
 
 ### Why localStorage instead of a browser database
 
@@ -148,7 +144,7 @@ Contains business concepts and pure functions. The domain layer must not import 
 
 Contains browser-specific implementations for file reading, parsing, validation, and localStorage.
 
-## Mobile-only application shell
+## Application shell
 
 The app should use a single-column mobile shell:
 
@@ -355,7 +351,7 @@ type Dashboard = {
   warnings: Warning[];
   dateRange: DateRange;
   comparisonPeriod?: DateRange;
-  filters: Record<string, string>;
+  filters: Record<string, string | string[]>;
   selectedKpiIds: string[];
   createdAt: string;
   updatedAt: string;
@@ -383,7 +379,7 @@ Phone file picker
 
 ### File constraints
 
-To keep the phone-only prototype simple, use these limits:
+To keep the prototype simple, use these limits:
 
 - maximum file size: 2 MB;
 - maximum parsed rows per file: 5,000;
@@ -890,4 +886,4 @@ The production version would introduce:
 - reliable observability and error reporting;
 - tested AI safeguards.
 
-These capabilities are intentionally excluded from the current phone-only prototype.
+These capabilities are intentionally excluded from the current prototype.
